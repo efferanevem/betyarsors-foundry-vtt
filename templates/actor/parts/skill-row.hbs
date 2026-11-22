@@ -1,0 +1,27 @@
+{{!-- Jártasság sor. Érték: 5 pötty – csak szerkesztés módban (Karakter: Fejlődés, NJK: Szerkesztés) állítható:
+     bal klikk = beállítás (az aktuális legfelsőre = -1), jobb klikk = -1. FP csak Karakternél, Fejlődés módban. --}}
+<li class="skill-row">
+  <a class="rollable skill-label" data-action="roll" data-roll-type="skill" data-key="{{key}}"
+     data-tooltip="BETYARSORS.Label.RollSkill">{{label}}</a>
+  {{#if @root.skillEdit}}
+  <span class="skill-pips editable" data-path="{{valueName}}" data-value="{{value}}" data-tooltip="BETYARSORS.Label.SkillPipsEdit">
+    {{#each pips}}<a class="pip {{#if filled}}filled{{/if}}" data-action="setPips" data-value="{{n}}"></a>{{/each}}
+  </span>
+  {{else}}
+  <span class="skill-pips" data-tooltip="BETYARSORS.Label.SkillPips">
+    {{#each pips}}<span class="pip {{#if filled}}filled{{/if}}"></span>{{/each}}
+  </span>
+  {{/if}}
+  {{#if @root.showFp}}
+  <span class="skill-fp" data-tooltip="BETYARSORS.Label.FpTooltip">
+    <span class="fp-bar"><span style="width: {{fpPercent}}%"></span></span>
+    <span class="fp-text">FP {{fp}}/{{#if fpNext}}{{fpNext}}{{else}}–{{/if}}</span>
+    <span class="stepper horizontal">
+      {{!-- ▼: FP -1; 0 FP-nél egy szinttel visszalép. ▲: FP +1; maximum (5) szinten nincs (nincs következő szint). --}}
+      {{#if value}}<a data-action="fpStep" data-group="{{group}}" data-key="{{key}}" data-delta="-1">▼</a>
+      {{else}}{{#if fp}}<a data-action="fpStep" data-group="{{group}}" data-key="{{key}}" data-delta="-1">▼</a>{{/if}}{{/if}}
+      {{#if fpNext}}<a data-action="fpStep" data-group="{{group}}" data-key="{{key}}" data-delta="1">▲</a>{{/if}}
+    </span>
+  </span>
+  {{/if}}
+</li>

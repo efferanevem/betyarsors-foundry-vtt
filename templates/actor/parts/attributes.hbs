@@ -1,0 +1,68 @@
+{{!-- Alaptulajdonságok + Jártasságok, alattuk: Harci Jártasságok (Erő + Ügyesség alatt) és Sebek (Lélek + Ész alatt) --}}
+<h3 class="section-title">
+  {{localize "BETYARSORS.Label.AttributesAndSkills"}}
+  <a class="fp-toggle {{#if skillEdit}}active{{/if}}" data-action="toggleSkillEdit" data-tooltip="{{skillEditTooltip}}">
+    <i class="fa-solid {{skillEditIcon}}"></i> {{skillEditLabel}}
+  </a>
+</h3>
+<section class="attributes">
+  {{#each attributeColumns}}
+  <div class="card attribute {{#if wounded}}is-wounded{{/if}} {{#if statusIcons.length}}has-status{{/if}}">
+    <header class="attribute-header">
+      <a class="rollable attribute-name" data-action="roll" data-roll-type="attribute" data-key="{{key}}"
+         data-tooltip="BETYARSORS.Label.RollAttribute">{{label}}</a>
+      <select class="fate-die" name="system.attributes.{{key}}.die" data-tooltip="BETYARSORS.Label.FateDie">
+        {{#each dieOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </header>
+    <div class="attribute-sub">
+      <em>{{rankLabel}}</em>
+      {{#each statusIcons}}<img class="attr-status {{effect}}" src="{{img}}" alt="" data-tooltip="{{tooltip}}" />{{/each}}
+      {{> "betyarsors.toggle" name=(concat "system.attributes." key ".wounded") value=wounded label=(localize "BETYARSORS.Label.Wounded")}}
+    </div>
+    <ol class="skill-list">
+      {{#each skills}}{{> "betyarsors.skill-row"}}{{else}}<li class="empty">–</li>{{/each}}
+    </ol>
+  </div>
+  {{/each}}
+
+  {{!-- Harci Jártasságok: az Erő és az Ügyesség oszlopa alatt, azokkal egy vonalban --}}
+  <div class="card combat">
+    <h3 class="card-title">{{localize "BETYARSORS.Label.CombatSkills"}}</h3>
+    <div class="combat-columns">
+      {{#each combatColumns}}
+      <ol class="skill-list">{{#each skills}}{{> "betyarsors.skill-row"}}{{else}}<li class="empty">–</li>{{/each}}</ol>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- Sebek: a Lélek és az Ész oszlopa alatt. Dobozok: kattintás = annyi seb, jobb klikk = -1.
+       Toll: a helyek száma típusonként átírható. --}}
+  <div class="card wounds {{#if woundEdit}}editing{{/if}}">
+    <header class="card-title with-aside">
+      <h3>{{localize "BETYARSORS.Label.Wounds"}}</h3>
+      {{#if editable}}
+      <a class="wound-edit-toggle {{#if woundEdit}}active{{/if}}" data-action="toggleWoundEdit"
+         data-tooltip="BETYARSORS.Label.WoundEdit"><i class="fa-solid fa-feather"></i></a>
+      {{/if}}
+    </header>
+    <ol class="skill-list wound-list">
+      {{#each woundRows}}
+      <li class="wound-row">
+        <span class="wound-name">{{label}}</span>
+        <span class="wound-boxes" data-path="{{path}}" data-value="{{value}}">
+          {{#each boxes}}<a class="wound-box {{#if filled}}filled{{/if}}" data-action="setWound" data-n="{{n}}"></a>{{/each}}
+        </span>
+        {{#if @root.woundEdit}}
+        <span class="wound-max" data-tooltip="BETYARSORS.Label.WoundMax">
+          <input type="number" name="{{maxName}}" value="{{max}}" min="0" max="{{@root.woundMaxLimit}}" />
+          {{> "betyarsors.stepper" path=maxName max=@root.woundMaxLimit}}
+        </span>
+        {{else}}
+        <span class="wound-range">{{localize "BETYARSORS.Label.Overflow"}} <strong>{{overflow}}</strong></span>
+        {{/if}}
+      </li>
+      {{/each}}
+    </ol>
+  </div>
+</section>

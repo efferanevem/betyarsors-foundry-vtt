@@ -1,0 +1,44 @@
+<section class="betyarsors-sheet creature-sheet npc-sheet">
+
+  {{!-- ============ FEJLÉC (kompakt) ============ --}}
+  <header class="sheet-header card">
+    <img class="profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img"
+         data-tooltip="BETYARSORS.Label.EditImage" />
+    <div class="header-main">
+      <span class="npc-tag">{{localize "TYPES.Actor.Npc"}}</span>
+      <input class="char-name" type="text" name="name" value="{{actor.name}}"
+             placeholder="{{localize "BETYARSORS.Label.Name"}}" />
+    </div>
+    <div class="header-stats">
+      <div class="stat-badge morale">
+        <span class="stat-label">{{localize "BETYARSORS.Label.Morale"}}</span>
+        <span class="stat-value">
+          <input type="number" name="system.morale.value" value="{{system.morale.value}}" min="0" />
+          <span class="stat-max">/ {{system.morale.max}}</span>
+          {{> "betyarsors.stepper" path="system.morale.value" max=system.morale.max}}
+        </span>
+        <select class="morale-type" name="system.morale.max" data-tooltip="BETYARSORS.Label.NpcMoraleType">
+          {{#each moraleOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </div>
+      {{#if editable}}
+      <a class="reputation-toggle {{#if showReputation}}active{{/if}}" data-action="toggleReputation"
+         data-tooltip="BETYARSORS.Label.ReputationToggle">
+        <i class="fa-solid fa-scale-balanced"></i> {{localize "BETYARSORS.Label.Reputation"}}
+      </a>
+      {{/if}}
+    </div>
+  </header>
+
+  {{#if showReputation}}{{> "betyarsors.reputation"}}{{/if}}
+
+  {{> "betyarsors.attributes"}}
+
+  {{!-- Felszerelés és Fortélyok egymás mellett – kompaktabb --}}
+  <div class="npc-two-col">
+    {{> "betyarsors.equipment"}}
+    {{> "betyarsors.fortelyok"}}
+  </div>
+
+  {{> "betyarsors.notes"}}
+</section>

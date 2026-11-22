@@ -1,0 +1,13 @@
+{
+  "name": "betyarsors",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "link": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/link.ps1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

@@ -1,0 +1,21 @@
+<section class="card reputation">
+  <div class="rep-block">
+    <h4>{{localize "BETYARSORS.Label.Honor"}}</h4>
+    {{> "betyarsors.segmented" name="system.honor" options=honorScale}}
+  </div>
+  <div class="rep-block">
+    <h4>{{localize "BETYARSORS.Label.Fear"}}</h4>
+    {{> "betyarsors.segmented" name="system.fear" options=fearScale}}
+  </div>
+  <div class="rep-block">
+    <h4>{{localize "BETYARSORS.Label.Wanted"}}</h4>
+    <input class="big-number" type="number" name="system.wanted" value="{{system.wanted}}" min="0" />
+  </div>
+  <div class="rep-block">
+    <h4>{{localize "BETYARSORS.Label.Bounty"}}</h4>
+    <span class="with-unit">
+      <input class="big-number" type="number" name="system.bounty" value="{{system.bounty}}" min="0" />
+      <span>Ft</span>
+    </span>
+  </div>
+</section>

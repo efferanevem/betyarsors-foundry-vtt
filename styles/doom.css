@@ -1,0 +1,54 @@
+/* Végzet számláló (module/apps/doom-tracker.mjs) – csak a Mesélőnek, bal oldalt a játékoslista fölött.
+   A Betyársors felület bőr stílusában (mint a játékoslista): sötét bőr, arany szegély, pergamen felirat.
+   Saját színekkel, hogy kikapcsolt "Betyársors felület" mellett is ugyanígy nézzen ki. */
+
+#betyarsors-doom {
+  --doom-gold: #b0843c;
+  --doom-gold-bright: #d6a34b;
+  --doom-parchment: #efe2c6;
+  --doom-parchment-soft: #c9ad84;
+  --doom-red: #c0533c;
+
+  pointer-events: all;
+  flex: none;
+  width: 200px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem 0.35rem 0.7rem;
+  border: 1px solid rgba(176, 132, 60, 0.55);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(64, 45, 30, 0.96) 0%, rgba(38, 26, 17, 0.96) 100%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(214, 163, 75, 0.18);
+  color: var(--doom-parchment);
+  font-family: "Alegreya", "Palatino Linotype", Georgia, serif;
+}
+
+#betyarsors-doom .doom-label {
+  font-family: "Alegreya SC", "Alegreya", Georgia, serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+#betyarsors-doom .doom-label::before { content: "❖ "; color: var(--doom-red); font-size: 0.85em; }
+
+#betyarsors-doom .doom-value {
+  min-width: 2rem;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--doom-gold-bright);
+  text-shadow: 0 0 6px rgba(214, 163, 75, 0.35);
+}
+
+#betyarsors-doom .doom-controls { display: flex; flex-direction: column; line-height: 1; }
+#betyarsors-doom .doom-controls a {
+  padding: 0.05rem 0.25rem;
+  font-size: 0.65rem;
+  color: var(--doom-parchment-soft);
+  border-radius: 2px;
+  cursor: pointer;
+}
+#betyarsors-doom .doom-controls a:hover { color: var(--doom-gold-bright); background: rgba(214, 163, 75, 0.15); }

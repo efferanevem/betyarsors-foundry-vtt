@@ -1,0 +1,381 @@
+/* Karakter- és NJK lap (közös .creature-sheet) – kártyás elrendezés. */
+
+/* ---------- Fejléc ---------- */
+.betyarsors .creature-sheet .sheet-header {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 0.9rem;
+  align-items: center;
+}
+.betyarsors .creature-sheet .profile-img { width: 96px; height: 96px; }
+.betyarsors .creature-sheet .header-main { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.betyarsors .creature-sheet .char-name {
+  height: auto;
+  box-shadow: none;
+  --input-background-color: transparent;
+  padding: 0 0.2rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--b-frame);
+  border-radius: 0;
+  font-family: var(--b-font-sc);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--b-ink);
+}
+.betyarsors .creature-sheet .header-fields { display: grid; grid-template-columns: 2fr 1fr; gap: 0.6rem; }
+.betyarsors .creature-sheet .header-stats { display: flex; gap: 0.5rem; }
+
+.betyarsors .stat-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 5.5rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--b-frame);
+  outline: 1px solid var(--b-gold);
+  outline-offset: 2px;
+  border-radius: 3px;
+  background: rgba(176, 132, 60, 0.14);
+}
+.betyarsors .stat-badge .stat-label { font-family: var(--b-font-sc); font-size: 0.78rem; font-weight: 700; color: var(--b-ink-soft); }
+.betyarsors .stat-badge .stat-value { display: flex; align-items: baseline; gap: 0.2rem; }
+.betyarsors .stat-badge input {
+  width: 2.4rem;
+  height: 2rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.betyarsors .stat-badge .stat-max { color: var(--b-ink-faint); font-size: 0.95rem; }
+.betyarsors .stepper {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  margin-left: 0.15rem;
+  line-height: 1;
+}
+.betyarsors .stepper a {
+  display: block;
+  padding: 0.05rem 0.2rem;
+  font-size: 0.6rem;
+  color: var(--b-ink-soft);
+  border-radius: 2px;
+}
+.betyarsors .stepper a:hover { color: var(--b-red); background: rgba(176, 132, 60, 0.2); }
+.betyarsors .stat-badge.fate { background: rgba(176, 132, 60, 0.24); }
+
+/* ---------- Hírnév sáv – kitölti a teljes szélességet ---------- */
+.betyarsors .creature-sheet .reputation {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 3fr) minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 1.2rem;
+  align-items: end;
+}
+.betyarsors .creature-sheet .rep-block { display: flex; flex-direction: column; min-width: 0; }
+.betyarsors .creature-sheet .rep-block .segmented { display: flex; width: 100%; }
+.betyarsors .creature-sheet .rep-block .segment { flex: 1; }
+.betyarsors .creature-sheet .rep-block .segment > span { min-width: 0; padding: 0.2rem 0; }
+.betyarsors .creature-sheet .big-number { width: 100%; font-size: 1.15rem; font-weight: 700; }
+.betyarsors .creature-sheet .with-unit { display: flex; align-items: center; gap: 0.3rem; font-weight: 700; }
+.betyarsors .creature-sheet .with-unit input { flex: 1; min-width: 0; }
+
+/* ---------- Tulajdonságok + jártasságok ---------- */
+.betyarsors .creature-sheet .attributes {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+.betyarsors .creature-sheet .attribute { padding: 0; display: flex; flex-direction: column; }
+.betyarsors .creature-sheet .attribute-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding: 0.35rem 0.55rem;
+  background: rgba(176, 132, 60, 0.2);
+  border-bottom: 1px solid var(--b-frame);
+}
+.betyarsors .creature-sheet .attribute-name {
+  font-family: var(--b-font-sc);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.betyarsors .creature-sheet .fate-die {
+  width: 4.2rem;
+  height: 1.7rem;
+  font-weight: 700;
+  text-align: center;
+  background: var(--b-parchment-light);
+  border: 1px solid var(--b-frame);
+}
+.betyarsors .creature-sheet .attribute-sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  border-bottom: 1px dotted var(--b-frame-light);
+  font-size: 0.8rem;
+  color: var(--b-ink-faint);
+}
+.betyarsors .creature-sheet .attribute.is-wounded { border-color: var(--b-red); }
+.betyarsors .creature-sheet .attribute.is-wounded .attribute-header { background: rgba(163, 58, 42, 0.18); }
+
+.betyarsors .skill-list { list-style: none; margin: 0; padding: 0.15rem 0.35rem 0.3rem; }
+.betyarsors .skill-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.4rem;
+  min-height: calc(1.5rem + 0.24rem);
+  padding: 0.12rem 0.15rem;
+  border-bottom: 1px dotted rgba(184, 150, 104, 0.6);
+}
+.betyarsors .skill-row:last-child { border-bottom: none; }
+.betyarsors .skill-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Érték: 5 pötty (a papír lap köreihez hasonlóan) */
+.betyarsors .skill-pips { display: flex; gap: 3px; }
+.betyarsors .skill-pips .pip {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid var(--b-ink-soft);
+  background: rgba(255, 250, 238, 0.5);
+  transition: transform 0.1s, background 0.1s;
+}
+.betyarsors .skill-pips.editable .pip { cursor: pointer; }
+.betyarsors .skill-pips .pip.filled { background: var(--b-ink); border-color: var(--b-ink); }
+.betyarsors .skill-pips.editable .pip:hover { transform: scale(1.25); border-color: var(--b-red); }
+
+/* Fejlődési Pontok – csak a "Fejlődés" kapcsolóval látszanak, a jártasság alatt külön sorban */
+.betyarsors .skill-fp {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.1rem 0 0.05rem;
+  font-size: 0.7rem;
+  color: var(--b-ink-faint);
+}
+.betyarsors .fp-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(122, 90, 54, 0.18);
+  overflow: hidden;
+}
+.betyarsors .fp-bar > span { display: block; height: 100%; background: var(--b-gold); }
+.betyarsors .fp-text { white-space: nowrap; }
+.betyarsors .stepper.horizontal { flex-direction: row; margin: 0; }
+
+.betyarsors .section-title .fp-toggle {
+  order: 3;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.45rem;
+  border: 1px solid var(--b-frame-light);
+  border-radius: 3px;
+  font-family: var(--b-font);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--b-ink-faint);
+}
+.betyarsors .section-title .fp-toggle:hover { color: var(--b-red); border-color: var(--b-red); }
+.betyarsors .section-title .fp-toggle.active { background: var(--b-ink-soft); border-color: var(--b-ink-soft); color: var(--b-parchment-light); }
+
+/* ---------- Harc + sebek (a tulajdonság-rács második sora) ---------- */
+/* A Harci Jártasságok kártya az Erő + Ügyesség oszlopot fedi le, belső oszlopai azokkal egy vonalban;
+   a Sebek kártya a Lélek + Ész oszlopot. */
+.betyarsors .creature-sheet .attributes .combat,
+.betyarsors .creature-sheet .attributes .wounds { grid-column: span 2; }
+.betyarsors .creature-sheet .combat { padding: 0.45rem 0 0.3rem; }
+.betyarsors .creature-sheet .combat .card-title { padding: 0 0.55rem; }
+.betyarsors .creature-sheet .combat-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem; /* = .attributes gap → a belső oszlopok a fenti kártyákkal egy vonalban */
+}
+.betyarsors .creature-sheet .combat-columns .skill-list + .skill-list { border-left: 1px dotted var(--b-frame-light); }
+
+/* A Sebek kártya ugyanúgy épül fel, mint a Harci Jártasságok (cím + 3 sor), így a kettő egyforma magas. */
+.betyarsors .creature-sheet .wounds { padding: 0.45rem 0 0.3rem; }
+.betyarsors .creature-sheet .wounds .card-title { padding: 0 0.55rem; }
+.betyarsors .creature-sheet .wound-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: calc(1.5rem + 0.24rem); /* = .skill-row magasság */
+  padding: 0.12rem 0.15rem;
+  border-bottom: 1px dotted rgba(184, 150, 104, 0.6);
+}
+.betyarsors .creature-sheet .wound-row:last-child { border-bottom: none; }
+.betyarsors .creature-sheet .wound-name { font-weight: 700; }
+.betyarsors .creature-sheet .wound-boxes { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: flex-end; }
+/* Sebdoboz: kattintás = annyi seb, jobb klikk = -1 */
+.betyarsors .creature-sheet .wound-box {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--b-ink-soft);
+  border-radius: 2px;
+  background: rgba(255, 250, 238, 0.5);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.betyarsors .creature-sheet .wound-box:hover { transform: scale(1.15); border-color: var(--b-red); }
+.betyarsors .creature-sheet .wound-box.filled { background: var(--b-red); border-color: var(--b-red); }
+.betyarsors .creature-sheet .wound-box.filled::after { content: "✕"; color: #fff; font-size: 12px; font-weight: 700; line-height: 1; }
+
+/* Toll: sebhelyek számának átírása */
+.betyarsors .creature-sheet .wound-edit-toggle {
+  font-size: 0.8rem;
+  color: var(--b-ink-faint);
+  padding: 0.05rem 0.3rem;
+  border-radius: 3px;
+}
+.betyarsors .creature-sheet .wound-edit-toggle:hover { color: var(--b-red); }
+.betyarsors .creature-sheet .wound-edit-toggle.active { background: var(--b-ink-soft); color: var(--b-parchment-light); }
+.betyarsors .creature-sheet .wound-max { display: flex; align-items: center; gap: 0.2rem; justify-content: flex-end; min-width: 6.5rem; }
+.betyarsors .creature-sheet .wound-max input { width: 2.2rem; height: 1.5rem; padding: 0; font-weight: 700; }
+.betyarsors .creature-sheet .wound-range { min-width: 6.5rem; text-align: right; font-size: 0.8rem; color: var(--b-ink-faint); }
+.betyarsors .creature-sheet .wound-range strong { font-size: 0.95rem; color: var(--b-red); }
+
+/* ---------- Felszerelés ---------- */
+.betyarsors .creature-sheet .money { display: flex; align-items: center; gap: 0.3rem; font-family: var(--b-font); font-size: 0.9rem; font-weight: 700; }
+.betyarsors .creature-sheet .money input { width: 4rem; height: 1.6rem; }
+.betyarsors .item-group + .item-group { margin-top: 0.4rem; }
+.betyarsors .item-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.1rem 0.25rem;
+  border-bottom: 1px solid var(--b-frame-light);
+  font-family: var(--b-font-sc);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--b-ink-soft);
+}
+
+/* ---------- Fortélyok ---------- */
+.betyarsors .fortelyok summary { cursor: pointer; list-style: none; }
+.betyarsors .fortelyok summary::-webkit-details-marker { display: none; }
+.betyarsors .fortelyok li + li { border-top: 1px dotted var(--b-frame-light); }
+.betyarsors .fortelyok .item-row { border-bottom: none; }
+.betyarsors .fortelyok details[open] summary .item-name { color: var(--b-red); }
+.betyarsors .fortely-description { padding: 0 0.5rem 0.4rem 2.3rem; font-size: 0.9rem; }
+
+/* ---------- Sérülések ---------- */
+.betyarsors .injuries { display: flex; flex-direction: column; gap: 0.25rem; }
+.betyarsors .injury-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 1.5rem;
+  gap: 0.4rem;
+  align-items: center;
+}
+.betyarsors .injury-head {
+  font-family: var(--b-font-sc);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--b-ink-soft);
+  border-bottom: 1px solid var(--b-frame-light);
+}
+
+/* ---------- Ló ---------- */
+.betyarsors .creature-sheet .horse { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }
+.betyarsors .creature-sheet .horse .card-title { grid-column: 1 / -1; margin-bottom: 0; }
+.betyarsors .creature-sheet .horse-fields { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 0.6rem; }
+
+/* ---------- Jegyzetek ---------- */
+.betyarsors .creature-sheet .notes prose-mirror { min-height: 140px; }
+
+/* ---------- NJK lap ---------- */
+.betyarsors .npc-sheet .sheet-header { grid-template-columns: 72px 1fr auto; gap: 0.8rem; }
+.betyarsors .npc-sheet .profile-img { width: 72px; height: 72px; }
+.betyarsors .npc-sheet .npc-tag {
+  font-family: var(--b-font-sc);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--b-ink-faint);
+  letter-spacing: 0.05em;
+}
+.betyarsors .npc-sheet .header-stats { align-items: center; gap: 0.7rem; }
+.betyarsors .npc-sheet .stat-badge .morale-type {
+  height: 1.4rem;
+  margin-top: 0.15rem;
+  padding: 0 0.2rem;
+  font-size: 0.75rem;
+  text-align: center;
+  background: transparent;
+  border: none;
+  border-top: 1px dotted var(--b-frame-light);
+  border-radius: 0;
+  box-shadow: none;
+}
+.betyarsors .npc-sheet .reputation-toggle {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--b-frame-light);
+  border-radius: 3px;
+  font-size: 0.75rem;
+  color: var(--b-ink-faint);
+}
+.betyarsors .npc-sheet .reputation-toggle i { font-size: 1rem; }
+.betyarsors .npc-sheet .reputation-toggle:hover { color: var(--b-red); border-color: var(--b-red); }
+.betyarsors .npc-sheet .reputation-toggle.active { background: var(--b-ink-soft); border-color: var(--b-ink-soft); color: var(--b-parchment-light); }
+.betyarsors .npc-sheet .npc-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  align-items: start;
+}
+.betyarsors .npc-sheet .npc-two-col .money input { width: 3rem; }
+.betyarsors .creature-sheet .skill-list .empty { list-style: none; text-align: center; padding: 0.3rem; }
+
+/* Tulajdonságkártyán: Hátrányt adó állapot ikonja */
+.betyarsors .creature-sheet .attr-status {
+  width: 16px;
+  height: 16px;
+  border: none;
+  padding: 1px;
+  border-radius: 3px;
+  background: var(--b-red);
+}
+.betyarsors .creature-sheet .attr-status.advantage { background: var(--b-green); }
+.betyarsors .creature-sheet .attribute.has-status { border-color: var(--b-red); }
+.betyarsors .fortely-prereq-line { margin: 0.1rem 0 0.3rem; font-size: 0.85rem; color: var(--b-ink-soft); }
+
+/* Felszereléslista: kinyitható fegyverek és egyéb tárgyak */
+.betyarsors .expandable-item-list > li + li { border-top: 1px dotted var(--b-frame-light); }
+.betyarsors .expandable-item-list summary { list-style: none; cursor: pointer; padding: 0.15rem 0 0.3rem; }
+.betyarsors .expandable-item-list summary::-webkit-details-marker { display: none; }
+.betyarsors .expandable-item-list .item-row { border-bottom: none; min-height: 1.8rem; padding-bottom: 0; }
+.betyarsors .expandable-item-list details[open] .item-name { color: var(--b-red); }
+.betyarsors .equipment-item-heading { display: flex; flex: 1; flex-wrap: wrap; min-width: 0; align-items: center; gap: 0.25rem 0.5rem; overflow-wrap: anywhere; }
+.betyarsors .equipment-tag {
+  flex: none;
+  padding: 0 0.4rem;
+  border: 1px solid var(--b-frame-light);
+  border-radius: 8px;
+  background: rgba(255, 250, 238, 0.45);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--b-ink-soft);
+  white-space: nowrap;
+}
+.betyarsors .equipment-tag.skill { font-weight: 700; color: var(--b-ink); }
+.betyarsors .equipment-tag.gear { border-color: var(--b-blue); color: var(--b-blue); font-weight: 700; }
+.betyarsors .equipment-tag.overflow { border-color: rgba(156, 58, 38, 0.6); color: #7a2a1a; font-weight: 700; }
+.betyarsors .equipment-tag.mounted-nem { opacity: 0.7; }
+.betyarsors .equipment-tag.mounted-hatrany { border-color: var(--b-red); color: var(--b-red); }
+.betyarsors .equipment-tag.mounted-igen { border-color: var(--b-green); color: var(--b-green); }
+.betyarsors .equipment-description { padding: 0.2rem 0.5rem 0.5rem calc(26px + 0.75rem); font-size: 0.9rem; }

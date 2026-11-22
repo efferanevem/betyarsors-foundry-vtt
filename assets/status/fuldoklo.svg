@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fuldokló: buborékok a hullámok fölött -->
+  <g fill="none" stroke="#fff" stroke-width="22">
+    <circle cx="256" cy="96" r="40"/><circle cx="330" cy="176" r="26"/><circle cx="200" cy="200" r="20"/>
+  </g>
+  <g fill="none" stroke="#fff" stroke-width="34" stroke-linecap="round">
+    <path d="M40 320c36-30 72-30 108 0s72 30 108 0 72-30 108 0 72 30 108 0"/>
+    <path d="M40 410c36-30 72-30 108 0s72 30 108 0 72-30 108 0 72 30 108 0"/>
+  </g>
+</svg>

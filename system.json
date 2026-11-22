@@ -1,0 +1,74 @@
+{
+  "id": "betyarsors",
+  "title": "Betyársors",
+  "description": "Betyársors szerepjátékrendszer Foundry VTT-hez.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": 14,
+    "verified": 14
+  },
+  "authors": [
+    {
+      "name": "effer_"
+    }
+  ],
+  "esmodules": [
+    "src/betyarsors.mjs"
+  ],
+  "styles": [
+    "styles/main.css"
+  ],
+  "languages": [
+    {
+      "lang": "hu",
+      "name": "Magyar",
+      "path": "lang/hu.json"
+    },
+    {
+      "lang": "en",
+      "name": "Magyar (alapértelmezett)",
+      "path": "lang/hu.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "Karakter": {
+        "htmlFields": [
+          "notes.biography"
+        ]
+      },
+      "Npc": {
+        "htmlFields": [
+          "notes.biography"
+        ]
+      }
+    },
+    "Item": {
+      "Fortely": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "Fegyver": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "Ruha": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "Targy": {
+        "htmlFields": [
+          "description"
+        ]
+      }
+    }
+  },
+  "grid": {
+    "distance": 1.5,
+    "units": "m"
+  },
+  "socket": true
+}

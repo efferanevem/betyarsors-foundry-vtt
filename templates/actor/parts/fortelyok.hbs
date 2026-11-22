@@ -1,0 +1,32 @@
+<section class="card fortelyok-card">
+  <header class="card-title with-aside">
+    <h3>{{localize "BETYARSORS.Label.Fortelyok"}}</h3>
+    {{#if editable}}
+    <a data-action="itemCreate" data-type="Fortely" data-tooltip="BETYARSORS.Label.Add"><i class="fa-solid fa-plus"></i></a>
+    {{/if}}
+  </header>
+  <ol class="item-list fortelyok">
+    {{#each fortelyok}}
+    <li class="draggable" data-item-id="{{item.id}}">
+      <details class="fortely">
+        <summary class="item-row">
+          <img class="item-img" src="{{item.img}}" alt="" />
+          <span class="item-name">{{item.name}}</span>
+          <span class="item-meta">{{kindLabel}}</span>
+          <span class="item-controls">
+            <a data-action="itemChat" data-tooltip="BETYARSORS.Label.ToChat"><i class="fa-solid fa-comment"></i></a>
+            <a data-action="itemEdit" data-tooltip="BETYARSORS.Label.Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+            {{#if @root.editable}}<a data-action="itemDelete" data-tooltip="BETYARSORS.Label.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+          </span>
+        </summary>
+        <div class="fortely-description">
+          {{#if prerequisite}}<p class="fortely-prereq-line"><strong>{{localize "BETYARSORS.Label.Prerequisite"}}:</strong> {{prerequisite}}</p>{{/if}}
+          {{{description}}}
+        </div>
+      </details>
+    </li>
+    {{else}}
+    <li class="empty">{{localize "BETYARSORS.Label.DropFortely"}}</li>
+    {{/each}}
+  </ol>
+</section>

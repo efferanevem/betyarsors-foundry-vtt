@@ -1,0 +1,223 @@
+/* ==========================================================================
+   Harc: Tekintet a harckövetőben + támadás / védekezés chatkártyák.
+   (module/combat/tekintet.mjs, module/combat/attack.mjs)
+   ========================================================================== */
+
+/* ---------- Harckövető: nincs körsorrend / kezdeményezés ---------- */
+.combat-tracker .token-initiative,
+.combat-tracker-header [data-action="rollAll"],
+.combat-tracker-header [data-action="rollNPC"],
+.combat-controls [data-action="previousRound"],
+.combat-controls [data-action="nextRound"],
+.combat-controls [data-action="previousTurn"],
+.combat-controls [data-action="nextTurn"] {
+  display: none !important;
+}
+
+/* A core "aktív kör" kiemelése nem jelent semmit – a Tekintet a kiemelés. */
+.combat-tracker li.combatant.active:not(.betyarsors-has-tekintet) {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* Tekintet birtokosa: arany keret, izzó szem */
+.combat-tracker li.combatant.betyarsors-has-tekintet {
+  background: linear-gradient(90deg, rgba(214, 163, 75, 0.28), rgba(214, 163, 75, 0.06));
+  border: 1px solid #d6a34b;
+  border-radius: 6px;
+  box-shadow: inset 0 0 10px rgba(214, 163, 75, 0.25);
+}
+.combat-tracker li.combatant.betyarsors-has-tekintet .token-name .name { color: #f3d08a; }
+
+/* Előző birtokos: halvány jelzés */
+
+/* 👁 Tekintet "érme": kerek, keretes – a sor jobb szélén (a kezdeményezés helyén) */
+.combat-tracker li.combatant .betyarsors-tekintet-btn {
+  --button-size: 30px;
+  flex: none;
+  align-self: center;
+  width: 30px;
+  height: 30px;
+  min-height: 0;
+  margin-left: auto;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid rgba(201, 173, 132, 0.55);
+  background: radial-gradient(circle, rgba(64, 45, 30, 0.9) 55%, rgba(31, 21, 13, 0.9) 100%);
+  box-shadow: inset 0 0 0 2px rgba(31, 21, 13, 0.9);
+  color: rgba(201, 173, 132, 0.6);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.combat-tracker li.combatant .betyarsors-tekintet-btn:hover {
+  border-color: #d6a34b;
+  color: #f3d08a;
+}
+/* Birtokos: teli arany érme, izzással */
+.combat-tracker li.combatant .betyarsors-tekintet-btn.active {
+  border-color: #f3d08a;
+  background: radial-gradient(circle at 35% 35%, #f3d08a 0%, #d6a34b 45%, #9a6d28 100%);
+  color: #2a1d12;
+  box-shadow: 0 0 8px rgba(214, 163, 75, 0.9), inset 0 0 0 2px rgba(255, 240, 200, 0.5);
+  cursor: default;
+}
+/* Előző birtokos: még halványabb */
+.combat-tracker li.combatant.betyarsors-tekintet-prev .betyarsors-tekintet-btn { opacity: 0.45; }
+
+.combat-tracker-header .encounter-title.betyarsors-tekintet-title { color: #f3d08a; font-weight: 700; }
+.combat-tracker-header .encounter-title.betyarsors-tekintet-title i { margin-right: 0.25rem; }
+
+/* ---------- Chat: Tekintet átadás ---------- */
+.betyarsors-tekintet-msg { font-family: "Alegreya", Georgia, serif; color: #2a1d12; }
+.betyarsors-tekintet-msg i { color: #b0843c; margin-right: 0.3rem; }
+
+/* ---------- Chat: támadás / védekezés ---------- */
+.chat-message .betyarsors-attack {
+  margin-top: 0.4rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid #7a5a36;
+  border-radius: 3px;
+  background: rgba(255, 250, 238, 0.4);
+  font-family: "Alegreya", Georgia, serif;
+  color: #2a1d12;
+}
+.chat-message .betyarsors-attack .attack-head {
+  font-family: "Alegreya SC", "Alegreya", Georgia, serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+.chat-message .betyarsors-attack .attack-head i { color: #9c3a26; margin-right: 0.2rem; }
+.chat-message .betyarsors-attack.defense .attack-head i { color: #3f5d7d; }
+
+.chat-message .betyarsors-attack .attack-target {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0;
+  border-top: 1px dotted #b89668;
+}
+.chat-message .betyarsors-attack .attack-target img { width: 24px; height: 24px; border: 1px solid #b89668; border-radius: 2px; object-fit: cover; }
+.chat-message .betyarsors-attack .target-name { font-weight: 700; flex: 1; }
+.chat-message .betyarsors-attack .awaiting { color: #85704f; font-size: 0.85rem; }
+
+.chat-message button.betyarsors-defend {
+  --button-size: 22px;
+  height: 22px;
+  min-height: 0;
+  width: auto;
+  padding: 0 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(63, 93, 125, 0.14);
+  border: 1px solid #3f5d7d;
+  border-radius: 3px;
+  color: #2c4560;
+  font-family: "Alegreya", Georgia, serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.chat-message button.betyarsors-defend:hover { background: #3f5d7d; color: #f8efdc; }
+
+/* Túlütés eredmény */
+.chat-message .betyarsors-overflow {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  background: rgba(176, 132, 60, 0.15);
+}
+.chat-message .betyarsors-overflow .overflow-calc { font-size: 0.8rem; color: #5a4632; }
+.chat-message .betyarsors-overflow .overflow-label {
+  padding: 0 0.4rem;
+  border-radius: 3px;
+  color: #fff;
+  background: #85704f;
+  white-space: nowrap;
+}
+.chat-message .betyarsors-overflow.miss .overflow-label { background: #6e7a5a; }
+.chat-message .betyarsors-overflow.surolas .overflow-label { background: #b0843c; }
+.chat-message .betyarsors-overflow.seb .overflow-label { background: #c0533c; }
+.chat-message .betyarsors-overflow.sulyos .overflow-label { background: #9c3a26; }
+.chat-message .betyarsors-overflow.halalos .overflow-label { background: #2a1d12; }
+
+/* Dobásablak: célpont / védekezés sor */
+.betyarsors .roll-sheet-combat { margin: 0.2rem 0 0; font-weight: 700; }
+.betyarsors .roll-sheet-combat.attack { color: #9c3a26; }
+.betyarsors .roll-sheet-combat.defense { color: #3f5d7d; }
+
+/* Túlütés módosító jelölés a támadás fejlécében + mező a dobásablakban */
+.chat-message .betyarsors-attack .overflow-mod-tag {
+  margin-left: 0.3rem;
+  padding: 0 0.35rem;
+  border-radius: 8px;
+  background: rgba(156, 58, 38, 0.15);
+  color: #9c3a26;
+  font-family: "Alegreya", Georgia, serif;
+  font-size: 0.75rem;
+}
+.betyarsors .roll-sheet-modifier.overflow-mod { border-color: #9c3a26; }
+
+/* ---------- Kis ablakok (Tekintet átadás / elragadás, Védekezés): saját margó és stílus ---------- */
+.application.betyarsors-dialog .window-content {
+  padding: 1rem 1.1rem 0.9rem;
+  gap: 0.9rem;
+  font-family: "Alegreya", Georgia, serif;
+}
+.application.betyarsors-dialog .window-content p { margin: 0; line-height: 1.4; }
+.application.betyarsors-dialog .form-footer { flex-wrap: wrap; gap: 0.5rem; }
+.application.betyarsors-dialog .form-footer button { flex: 1 1 auto; padding: 0 0.8rem; }
+
+/* Találati hely: gomb az eredmény sorában, kidobott eredmény, és a d4 chatkártya */
+.chat-message .betyarsors-overflow { flex-wrap: wrap; }
+/* Kicsi kerek ikon-gomb a Túlütés-címke mellett (a core gomb min-magasságát is felülírva) */
+.chat-message button.betyarsors-hit-location {
+  --button-size: 20px;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  max-height: 20px;
+  margin-left: auto;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  background: rgba(156, 58, 38, 0.12);
+  border: 1px solid #9c3a26;
+  border-radius: 50%;
+  color: #7a2a1a;
+  font-size: 10px;
+  line-height: 1;
+}
+.chat-message button.betyarsors-hit-location:hover { background: #9c3a26; color: #f8efdc; }
+.chat-message button.betyarsors-hit-location:disabled { opacity: 0.4; }
+.chat-message .betyarsors-overflow button.betyarsors-hit-location + .overflow-label { margin-left: 0; }
+.chat-message .betyarsors-overflow .hit-location {
+  flex-basis: 100%;
+  margin-top: 0.15rem;
+  font-weight: 700;
+  color: #7a2a1a;
+}
+.chat-message .betyarsors-hit-location-result {
+  margin-top: 0.3rem;
+  padding: 0.25rem;
+  text-align: center;
+  border: 1px solid #9c3a26;
+  border-radius: 3px;
+  background: rgba(156, 58, 38, 0.1);
+  font-family: "Alegreya SC", "Alegreya", Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #7a2a1a;
+}

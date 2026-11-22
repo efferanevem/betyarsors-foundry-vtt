@@ -1,0 +1,229 @@
+/* ==========================================================================
+   Betyársors felület – a Foundry UI a rendszer stílusában (bőr + pergamen).
+   Csak akkor él, ha a body `betyarsors-ui` osztályt kapott (module/apps/ui-theme.mjs).
+
+   Működés: a Foundry v14 felülete egy színpalettára épül (cool = sötét sávok, light/dark = szövegek
+   és világos ablakok, warm = kiemelések). Ezt a palettát definiáljuk át barnára/pergamenre/aranyra,
+   így a core felület nagy része magától átszíneződik; alul csak célzott finomítások vannak.
+   A core CSS @layer-ekben van, ezért ezek a (rétegen kívüli) szabályok felülírják.
+   ========================================================================== */
+
+/* ---------- Paletta + betűk ---------- */
+body.betyarsors-ui {
+  /* Kiemelések: arany, vörös, mély barna */
+  --color-warm-1: #d6a34b;
+  --color-warm-2: #9c3a26;
+  --color-warm-3: #4a2717;
+
+  /* Sötét felületek: bőrbarna árnyalatok */
+  --color-cool-3: #6a4a2f;
+  --color-cool-4: #3e2b1c;
+  --color-cool-5: #1f150d;
+  --color-cool-5-25: rgba(31, 21, 13, 0.25);
+  --color-cool-5-50: rgba(31, 21, 13, 0.5);
+  --color-cool-5-75: rgba(31, 21, 13, 0.8);
+  --color-cool-5-90: rgba(31, 21, 13, 0.93);
+
+  /* Világos árnyalatok: pergamen (sötét felületen ez a szövegszín) */
+  --color-light-1: #f8efdc;
+  --color-light-2: #efe2c6;
+  --color-light-3: #e2cfa8;
+  --color-light-4: #c9ad84;
+  --color-light-5: #a08664;
+  --color-light-6: #7d6548;
+
+  /* Sötét árnyalatok: tinta (pergamenen ez a szövegszín) */
+  --color-dark-1: #2a1d12;
+  --color-dark-2: #33241a;
+  --color-dark-3: #45321f;
+  --color-dark-4: #5a4632;
+  --color-dark-5: #6e5740;
+  --color-dark-6: #85704f;
+
+  --font-sans: "Alegreya", "Signika", ui-serif, serif;
+  --font-body: var(--font-sans);
+  --font-primary: var(--font-sans);
+  --font-serif: "Alegreya", "Amiri", serif;
+  --font-blockquote: "Alegreya", serif;
+
+  /* Saját segédváltozók */
+  --bui-gold: #b0843c;
+  --bui-gold-soft: rgba(176, 132, 60, 0.55);
+  --bui-frame: #7a5a36;
+  --bui-ink: #2a1d12;
+  --bui-parchment: #efe2c6;
+  --bui-leather: linear-gradient(180deg, rgba(64, 45, 30, 0.96) 0%, rgba(38, 26, 17, 0.96) 100%);
+  --bui-parchment-bg:
+    radial-gradient(ellipse at center, rgba(255, 248, 230, 0) 55%, rgba(120, 85, 40, 0.22) 100%),
+    url("../assets/ui/parchment.jpg") center / cover,
+    #efe2c6;
+}
+
+/* ---------- Eszköztár gombok (bal sáv, oldalsáv fülek, hotbar gombok) ---------- */
+body.betyarsors-ui .ui-control {
+  --control-bg-color: rgba(38, 26, 17, 0.88);
+  --control-border-color: var(--bui-gold-soft);
+  --control-icon-color: var(--color-light-3);
+  --control-hover-bg-color: #4a3423;
+  --control-hover-border-color: var(--bui-gold);
+  --control-hover-icon-color: #fff7e6;
+  --control-active-bg-color: #5a3d26;
+  --control-active-border-color: var(--color-warm-1);
+  --control-active-icon-color: var(--color-warm-1);
+}
+
+/* ---------- Oldalsáv (jobb) ---------- */
+body.betyarsors-ui .sidebar-tab {
+  background: var(--bui-leather);
+  border: 1px solid var(--bui-gold-soft);
+  border-right: none;
+}
+body.betyarsors-ui .sidebar-tab .directory-header,
+body.betyarsors-ui .sidebar-tab .directory-footer { border-color: var(--bui-gold-soft); }
+body.betyarsors-ui .sidebar-tab h1,
+body.betyarsors-ui .sidebar-tab h2,
+body.betyarsors-ui .sidebar-tab h3,
+body.betyarsors-ui .sidebar-tab h4 { font-family: "Alegreya SC", var(--font-sans); }
+
+/* ---------- Chat ---------- */
+body.betyarsors-ui .chat-message {
+  --chat-message-background: var(--bui-parchment-bg);
+  --chat-message-border-color: var(--bui-frame);
+  color: var(--bui-ink);
+  border-width: 1px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45), inset 0 0 14px rgba(176, 132, 60, 0.15);
+  outline: 1px solid rgba(176, 132, 60, 0.35);
+  outline-offset: -4px;
+}
+body.betyarsors-ui .chat-message .message-header { color: var(--color-dark-4); }
+body.betyarsors-ui .chat-message .message-sender {
+  font-family: "Alegreya SC", var(--font-sans);
+  font-weight: 700;
+  color: var(--bui-ink);
+}
+body.betyarsors-ui .chat-message .flavor-text { color: var(--color-dark-3); }
+body.betyarsors-ui .chat-message .dice-roll .dice-formula,
+body.betyarsors-ui .chat-message .dice-roll .dice-total {
+  background: rgba(255, 250, 238, 0.45);
+  border: 1px solid var(--bui-frame);
+  border-radius: 3px;
+  box-shadow: none;
+}
+body.betyarsors-ui .chat-message .dice-roll .dice-total {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-24);
+  font-weight: 700;
+  color: var(--bui-ink);
+}
+body.betyarsors-ui .chat-message .dice-tooltip .dice-rolls .roll { color: var(--bui-ink); }
+
+/* Chat beviteli mező (sötét sávon) */
+body.betyarsors-ui #chat-message {
+  --background-color: rgba(31, 21, 13, 0.9);
+  --border-color: var(--bui-gold-soft);
+  --text-color: var(--color-light-2);
+  font-family: var(--font-sans);
+}
+
+/* ---------- Bal sáv: játékoslista, jelenetek ---------- */
+body.betyarsors-ui #players #players-active,
+body.betyarsors-ui #players #players-inactive {
+  background: var(--bui-leather);
+  border-color: var(--bui-gold-soft);
+}
+body.betyarsors-ui #scene-navigation .scene-navigation-menu .scene {
+  border-color: var(--bui-gold-soft);
+}
+
+/* ---------- Hotbar ---------- */
+body.betyarsors-ui #hotbar {
+  --slot-color: rgba(38, 26, 17, 0.88);
+  --key-bg-color-empty: #2b1d12;
+  --key-bg-color-full: #5a3d26;
+  --key-text-color: var(--color-light-2);
+  --page-control-color: var(--color-light-4);
+}
+body.betyarsors-ui #hotbar #action-bar .slot { border-color: var(--bui-gold-soft); }
+body.betyarsors-ui #hotbar #action-bar .slot:hover { border-color: var(--color-warm-1); }
+
+/* ---------- Ablakok és dialógusok: bőr fejléc, pergamen tartalom ---------- */
+body.betyarsors-ui .application.themed.theme-light {
+  --background: var(--bui-parchment-bg);
+  --color-header-background: var(--bui-leather);
+  --color-border: var(--bui-frame);
+  --color-fieldset-border: var(--color-light-4);
+}
+body.betyarsors-ui .application .window-header {
+  border-bottom: 2px solid var(--bui-gold);
+  color: var(--color-light-1);
+}
+/* A világos téma a fejléc elemeit sötétre színezné – a bőr fejlécen maradjanak világosak. */
+body.betyarsors-ui .application .window-header .window-title,
+body.betyarsors-ui .application .window-header .window-icon,
+body.betyarsors-ui .application .window-header .header-control {
+  color: var(--color-light-1);
+  --button-text-color: var(--color-light-1);
+  --button-hover-text-color: var(--color-warm-1);
+}
+body.betyarsors-ui .application .window-header .window-title {
+  font-family: "Alegreya SC", var(--font-sans);
+  font-size: var(--font-size-15);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+body.betyarsors-ui .application.themed.theme-light .window-content h1,
+body.betyarsors-ui .application.themed.theme-light .window-content h2,
+body.betyarsors-ui .application.themed.theme-light .window-content h3,
+body.betyarsors-ui .application.themed.theme-light .window-content legend {
+  font-family: "Alegreya SC", var(--font-sans);
+  color: var(--bui-ink);
+}
+
+/* Gombok pergamenen: tinta + barna keret, rámutatásra bőr */
+body.betyarsors-ui .application.themed.theme-light button:not(.ui-control):not(.header-control):not(.plain) {
+  --button-background-color: rgba(176, 132, 60, 0.16);
+  --button-border-color: var(--bui-frame);
+  --button-text-color: var(--bui-ink);
+  --button-hover-background-color: #4a3423;
+  --button-hover-border-color: var(--bui-gold);
+  --button-hover-text-color: var(--color-light-1);
+  --button-focus-outline-color: var(--bui-gold);
+  font-family: var(--font-sans);
+}
+/* Fő (submit) gomb: sötét bőr, arany kerettel */
+body.betyarsors-ui .application.themed.theme-light .form-footer button[type="submit"] {
+  --button-background-color: #4a3423;
+  --button-text-color: var(--color-light-1);
+  --button-border-color: var(--bui-gold);
+  --button-hover-background-color: #5a3d26;
+}
+
+/* Beviteli mezők pergamenen */
+body.betyarsors-ui .application.themed.theme-light input,
+body.betyarsors-ui .application.themed.theme-light select,
+body.betyarsors-ui .application.themed.theme-light textarea {
+  --input-background-color: rgba(255, 250, 238, 0.55);
+  --input-border-color: var(--color-light-5);
+  --input-text-color: var(--bui-ink);
+  --input-focus-outline-color: var(--color-warm-2);
+}
+
+/* Fülek */
+body.betyarsors-ui .application.themed.theme-light nav.tabs [data-tab].active,
+body.betyarsors-ui .application.themed.theme-light nav.tabs [data-tab][aria-pressed="true"] {
+  color: var(--color-warm-2);
+  text-shadow: none;
+}
+
+/* ---------- Súgóbuborék, helyi menü ---------- */
+body.betyarsors-ui #tooltip,
+body.betyarsors-ui .locked-tooltip {
+  font-family: var(--font-sans);
+  border: 1px solid var(--bui-gold-soft);
+}
+body.betyarsors-ui #context-menu {
+  --background-color: #2b1d12;
+  --border-color: var(--bui-gold-soft);
+  font-family: var(--font-sans);
+}

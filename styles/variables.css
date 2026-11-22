@@ -1,0 +1,27 @@
+/* Betyársors – téma változók. A szabálykönyv és a karakterlap színvilága:
+   pergamen alap, sötétbarna tinta, aranybarna keretek, népi piros/kék díszek. Betű: Alegreya (a könyv betűje). */
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+SC:wght@500;700&display=swap");
+
+.betyarsors,
+.betyarsors-roll-flavor,
+.betyarsors-result,
+.betyarsors-item-card,
+.dice-roll[class*="betyarsors-"] {
+  --b-parchment: #efe2c6;
+  --b-parchment-light: #f6ecd6;
+  --b-parchment-dark: #e2cfa8;
+  --b-ink: #2f2115;
+  --b-ink-soft: #5a4632;
+  --b-ink-faint: #8a7356;
+  --b-frame: #7a5a36;
+  --b-frame-light: #b89668;
+  --b-gold: #b0843c;
+  --b-red: #a33a2a;
+  --b-blue: #3f5d7d;
+  --b-green: #4d6b33;
+  --b-header-bg: rgba(176, 132, 60, 0.18);
+
+  --b-font: "Alegreya", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --b-font-sc: "Alegreya SC", "Alegreya", "Palatino Linotype", Georgia, serif;
+  --b-gap: 0.5rem;
+}

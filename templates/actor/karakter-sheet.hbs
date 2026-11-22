@@ -1,0 +1,104 @@
+<section class="betyarsors-sheet creature-sheet karakter-sheet">
+
+  {{!-- ============ FEJLÉC ============ --}}
+  <header class="sheet-header card">
+    <img class="profile-img" src="{{actor.img}}" alt="{{actor.name}}" data-action="editImage" data-edit="img"
+         data-tooltip="BETYARSORS.Label.EditImage" />
+    <div class="header-main">
+      <input class="char-name" type="text" name="name" value="{{actor.name}}"
+             placeholder="{{localize "BETYARSORS.Label.Name"}}" />
+      <div class="header-fields">
+        <label class="field">
+          <span>{{localize "BETYARSORS.Label.Background"}}</span>
+          <input type="text" name="system.identity.background" value="{{system.identity.background}}" />
+        </label>
+        <label class="field">
+          <span>{{localize "BETYARSORS.Label.Player"}}</span>
+          <input type="text" name="system.identity.player" value="{{system.identity.player}}" />
+        </label>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-badge fate">
+        <span class="stat-label">{{localize "BETYARSORS.Label.FatePoints"}}</span>
+        <span class="stat-value">
+          <input type="number" name="system.fatePoints" value="{{system.fatePoints}}" min="0" max="{{fatePointsMax}}" />
+          <span class="stat-max">/ {{fatePointsMax}}</span>
+          {{> "betyarsors.stepper" path="system.fatePoints" max=fatePointsMax}}
+        </span>
+      </div>
+      <div class="stat-badge morale">
+        <span class="stat-label">{{localize "BETYARSORS.Label.Morale"}}</span>
+        <span class="stat-value">
+          <input type="number" name="system.morale.value" value="{{system.morale.value}}" min="0" />
+          <span class="stat-max">/ {{system.morale.max}}</span>
+          {{> "betyarsors.stepper" path="system.morale.value" max=system.morale.max}}
+        </span>
+      </div>
+    </div>
+  </header>
+
+  {{> "betyarsors.reputation"}}
+  {{> "betyarsors.attributes"}}
+  {{> "betyarsors.equipment"}}
+  {{> "betyarsors.fortelyok"}}
+
+  {{!-- ============ SÉRÜLÉSEK ============ --}}
+  <section class="card">
+    <header class="card-title with-aside">
+      <h3>{{localize "BETYARSORS.Label.Injuries"}}</h3>
+      {{#if editable}}
+      <a data-action="injuryAdd" data-tooltip="BETYARSORS.Label.Add"><i class="fa-solid fa-plus"></i></a>
+      {{/if}}
+    </header>
+    <div class="injuries">
+      <div class="injury-row injury-head">
+        <span>{{localize "BETYARSORS.Label.InjuryLocation"}}</span>
+        <span>{{localize "BETYARSORS.Label.InjuryEffect"}}</span>
+        <span>{{localize "BETYARSORS.Label.InjuryRecovery"}}</span>
+        <span></span>
+      </div>
+      {{#each injuries}}
+      <div class="injury-row" data-index="{{index}}">
+        <input type="text" name="system.injuries.{{index}}.location" value="{{location}}" />
+        <input type="text" name="system.injuries.{{index}}.effect" value="{{effect}}" />
+        <input type="text" name="system.injuries.{{index}}.recovery" value="{{recovery}}" />
+        <span class="item-controls">
+          {{#if @root.editable}}<a data-action="injuryDelete" data-tooltip="BETYARSORS.Label.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+        </span>
+      </div>
+      {{else}}
+      <p class="empty">{{localize "BETYARSORS.Label.NoInjuries"}}</p>
+      {{/each}}
+    </div>
+  </section>
+
+  {{!-- ============ LÓ ============ --}}
+  <section class="card horse">
+    <h3 class="card-title"><i class="fa-solid fa-horse-head"></i> {{localize "BETYARSORS.Label.Horse"}}</h3>
+    <div class="horse-fields">
+      <label class="field">
+        <span>{{localize "BETYARSORS.Label.HorseName"}}</span>
+        <input type="text" name="system.horse.name" value="{{system.horse.name}}" />
+      </label>
+      <label class="field">
+        <span>{{localize "BETYARSORS.Label.HorseBreed"}}</span>
+        <input type="text" name="system.horse.breed" value="{{system.horse.breed}}" />
+      </label>
+      <label class="field wide">
+        <span>{{localize "BETYARSORS.Label.HorseBonuses"}}</span>
+        <input type="text" name="system.horse.bonuses" value="{{system.horse.bonuses}}" />
+      </label>
+    </div>
+    <div class="horse-state">
+      <h4>{{localize "BETYARSORS.Label.HorseHealth"}}</h4>
+      {{> "betyarsors.segmented" name="system.horse.health" options=horseHealth}}
+    </div>
+    <div class="horse-state">
+      <h4>{{localize "BETYARSORS.Label.HorseExhaustion"}}</h4>
+      {{> "betyarsors.segmented" name="system.horse.exhaustion" options=horseExhaustion}}
+    </div>
+  </section>
+
+  {{> "betyarsors.notes"}}
+</section>

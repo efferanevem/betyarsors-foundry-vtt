@@ -1,0 +1,11 @@
+/* Betyársors – main stylesheet (loaded via system.json → "styles").
+   Order: variables → common sheet → sheets → chat */
+@import url("variables.css");
+@import url("sheets/common.css");
+@import url("sheets/creature-sheet.css");
+@import url("sheets/item-sheet.css");
+@import url("sheets/roll-sheet.css");
+@import url("chat.css");
+@import url("doom.css");
+@import url("combat.css");
+@import url("ui.css");

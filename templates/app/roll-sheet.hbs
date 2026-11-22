@@ -1,0 +1,74 @@
+<section class="roll-sheet-body">
+  <header class="roll-sheet-header">
+    <h3>{{label}}</h3>
+    <p class="roll-sheet-meta">
+      {{attrLabel}} · {{localize "BETYARSORS.Roll.FateDie"}} d{{die}}
+      {{#if skillValue}} · {{localize "BETYARSORS.Roll.SkillDice"}} {{skillValue}}d4{{/if}}
+    </p>
+    {{#if attackTargets}}<p class="roll-sheet-combat attack"><i class="fa-solid fa-crosshairs"></i> {{localize "BETYARSORS.Attack.Title"}} → {{attackTargets}}</p>{{/if}}
+    {{#if defenseAgainst}}<p class="roll-sheet-combat defense"><i class="fa-solid fa-shield-halved"></i> {{localize "BETYARSORS.Attack.DefenseHeader"}}: {{defenseAgainst}}</p>{{/if}}
+    {{#if circumstanceSummary}}
+    <div class="roll-circumstances">
+      {{#each advantages}}<span class="circumstance advantage"><i class="fa-solid fa-arrow-up"></i> {{this}}</span>{{/each}}
+      {{#each disadvantages}}<span class="circumstance disadvantage"><i class="fa-solid fa-arrow-down"></i> {{this}}</span>{{/each}}
+      <span class="circumstance-summary" data-state="{{netState}}">{{circumstanceSummary}}</span>
+    </div>
+    {{/if}}
+  </header>
+
+  {{!-- Egységes rács: felirat balra, vezérlő jobbra a teljes szélességben --}}
+  <div class="roll-sheet-fields">
+    <span class="roll-sheet-label">{{localize "BETYARSORS.RollSheet.Mode"}}</span>
+    <div class="roll-mode">
+      {{#each modes}}
+      <label class="roll-mode-option {{cls}}">
+        <input type="radio" name="advantage" value="{{value}}" {{checked checked}} hidden />
+        <span>{{localize label}}</span>
+      </label>
+      {{/each}}
+    </div>
+
+    <span class="roll-sheet-label">{{localize "BETYARSORS.Roll.GearDice"}}</span>
+    <div class="gear-picker">
+      {{#each gearDice}}
+      <a class="gear-die {{#if selected}}selected{{/if}}" data-value="{{n}}">{{{icon}}}</a>
+      {{/each}}
+      <a class="gear-reset" data-value="0" data-tooltip="BETYARSORS.RollSheet.GearReset">✕</a>
+      <input type="hidden" name="gearDice" value="{{gearValue}}" />
+    </div>
+
+    {{#if gearItems.length}}
+    {{!-- Felszereléskockát adó tárgyak ehhez a jártassághoz – bepipálva hozzáadódnak (max 3d6) --}}
+    <ul class="gear-items">
+      {{#each gearItems}}
+      <li>
+        <label class="gear-item">
+          <input type="checkbox" name="gearItem" value="{{id}}" {{checked checked}} hidden />
+          <span class="toggle-box"></span>
+          <img src="{{img}}" alt="" />
+          <span class="gear-item-name">{{name}}</span>
+          <span class="gear-item-dice">+{{dice}}d6</span>
+        </label>
+      </li>
+      {{/each}}
+      <li class="gear-cap-note" hidden>{{localize "BETYARSORS.RollSheet.GearCap"}}</li>
+    </ul>
+    {{/if}}
+
+    <span class="roll-sheet-label">{{localize "BETYARSORS.RollSheet.Modifier"}}</span>
+    <input class="roll-sheet-modifier" type="number" name="modifier" value="0" step="1" />
+
+    {{#if attackTargets}}
+    {{!-- Túlütés módosító: NEM adódik a dobáshoz – csak találat esetén a Túlütéshez (fegyver, helyzet) --}}
+    <span class="roll-sheet-label" data-tooltip="BETYARSORS.Attack.OverflowModTooltip">{{localize "BETYARSORS.Attack.OverflowMod"}}</span>
+    <input class="roll-sheet-modifier overflow-mod" type="number" name="overflowMod" value="{{overflowModInitial}}" step="1"
+           data-tooltip="BETYARSORS.Attack.OverflowModTooltip" />
+    {{/if}}
+  </div>
+
+  <div class="roll-sheet-summary">
+    <span class="roll-sheet-label">{{localize "BETYARSORS.RollSheet.Summary"}}</span>
+    <div class="roll-sheet-dice">{{{dicePreview}}}</div>
+    <code class="roll-sheet-formula" data-tooltip="BETYARSORS.RollSheet.Formula">{{formula}}</code>
+  </div>
+</section>

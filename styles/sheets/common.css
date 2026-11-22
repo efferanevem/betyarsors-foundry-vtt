@@ -1,0 +1,227 @@
+/* Közös lap stílus (actor, item, dobásablak).
+   A Foundry core CSS rétegekben (@layer) van, ezért ezek a szabályok felülírják.
+   A lapok a "themed theme-light" osztállyal mindig világos témában jelennek meg; itt a téma
+   változóit a pergamen színvilágra állítjuk, hogy a core űrlapelemek is illeszkedjenek. */
+
+.application.betyarsors {
+  --color-text-primary: var(--b-ink);
+  --color-text-secondary: var(--b-ink-soft);
+  --color-text-subtle: var(--b-ink-faint);
+  --color-text-emphatic: var(--b-ink);
+  --color-border: var(--b-frame-light);
+  --input-background-color: rgba(255, 250, 238, 0.55);
+  --input-border-color: var(--b-frame-light);
+  --input-text-color: var(--b-ink);
+  --input-placeholder-color: var(--b-ink-faint);
+  --input-focus-outline-color: var(--b-red);
+  --input-height: 1.75rem;
+  --button-background-color: var(--b-parchment-dark);
+  --button-border-color: var(--b-frame);
+  --button-text-color: var(--b-ink);
+  --button-hover-background-color: var(--b-frame-light);
+  --button-hover-text-color: var(--b-ink);
+  font-family: var(--b-font);
+}
+
+/* Ablak fejléc – sötét bőr hatás */
+.application.betyarsors .window-header {
+  background: linear-gradient(180deg, #4a3422, #33241a);
+  color: var(--b-parchment-light);
+  border-bottom: 2px solid var(--b-gold);
+  font-family: var(--b-font-sc);
+}
+.application.betyarsors .window-header .window-title { font-size: 1.05rem; }
+.application.betyarsors .window-header button,
+.application.betyarsors .window-header a { color: var(--b-parchment-light); }
+
+/* Tartalom – pergamen háttér, enyhe sötétedő szélekkel */
+.application.betyarsors .window-content {
+  padding: 0;
+  color: var(--b-ink);
+  background:
+    radial-gradient(ellipse at center, rgba(255, 248, 230, 0) 55%, rgba(120, 85, 40, 0.28) 100%),
+    url("../../assets/ui/parchment.jpg") center / cover,
+    var(--b-parchment);
+}
+
+/* A lap teste görget (a core .window-content overflow: hidden) */
+.application.betyarsors .window-content > .betyarsors-sheet {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.75rem 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+}
+
+/* ---------- Kártyák és címek ---------- */
+.betyarsors .card {
+  position: relative;
+  background: rgba(255, 249, 235, 0.45);
+  border: 1px solid var(--b-frame);
+  outline: 1px solid rgba(122, 90, 54, 0.35);
+  outline-offset: 2px;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(60, 40, 20, 0.18), inset 0 0 18px rgba(176, 132, 60, 0.12);
+  padding: 0.55rem 0.7rem;
+}
+
+.betyarsors .section-title,
+.betyarsors .card-title,
+.betyarsors .card-title h3 {
+  margin: 0;
+  border: none;
+  font-family: var(--b-font-sc);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--b-ink);
+  letter-spacing: 0.02em;
+}
+.betyarsors .card-title { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.4rem; }
+.betyarsors .card-title::before,
+.betyarsors .section-title::before { content: "❖"; color: var(--b-red); font-size: 0.85em; }
+.betyarsors .card-title.with-aside h3 { display: contents; }
+.betyarsors .card-title.with-aside > :last-child { margin-left: auto; }
+.betyarsors .section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.2rem 0 -0.35rem;
+}
+.betyarsors .section-title::after {
+  content: "";
+  flex: 1;
+  border-top: 3px double var(--b-frame-light);
+}
+.betyarsors h4,
+.betyarsors .sub-title {
+  margin: 0 0 0.25rem;
+  border: none;
+  font-family: var(--b-font-sc);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--b-ink-soft);
+  text-transform: none;
+}
+
+/* ---------- Űrlapelemek ---------- */
+/* A világos téma közvetlenül az elemeken állítja a változókat, ezért itt is felül kell írni. */
+.application.betyarsors input,
+.application.betyarsors select,
+.application.betyarsors textarea {
+  --input-background-color: rgba(255, 250, 238, 0.6);
+  --input-border-color: var(--b-frame-light);
+  --input-text-color: var(--b-ink);
+  --input-focus-outline-color: var(--b-red);
+}
+.betyarsors input[type="text"],
+.betyarsors input[type="number"],
+.betyarsors select {
+  font-family: var(--b-font);
+  font-size: 0.95rem;
+  color: var(--b-ink);
+}
+.betyarsors input[type="number"] { text-align: center; -moz-appearance: textfield; appearance: textfield; }
+.betyarsors input[type="number"]::-webkit-inner-spin-button,
+.betyarsors input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Felirat + mező egymás alatt */
+.betyarsors .field { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.betyarsors .field > span {
+  font-family: var(--b-font-sc);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--b-ink-soft);
+}
+
+/* Szegmentált választó (radio) – pl. Becsület, ló állapot */
+.betyarsors .segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--b-frame);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.betyarsors .segment { margin: 0; cursor: pointer; }
+.betyarsors .segment > span {
+  display: block;
+  min-width: 2rem;
+  padding: 0.15rem 0.45rem;
+  text-align: center;
+  font-size: 0.85rem;
+  border-right: 1px solid var(--b-frame-light);
+  background: rgba(255, 250, 238, 0.4);
+  transition: background 0.15s;
+}
+.betyarsors .segment:last-child > span { border-right: none; }
+.betyarsors .segment:hover > span { background: rgba(176, 132, 60, 0.22); }
+.betyarsors .segment input:checked + span {
+  background: var(--b-ink-soft);
+  color: var(--b-parchment-light);
+  font-weight: 700;
+}
+
+/* Jelölő (checkbox) – saját doboz, a core ikonos checkboxa helyett */
+.betyarsors .toggle { display: inline-flex; align-items: center; gap: 0.35rem; margin: 0; cursor: pointer; }
+.betyarsors .toggle-box {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--b-ink-soft);
+  border-radius: 2px;
+  background: rgba(255, 250, 238, 0.5);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.betyarsors .toggle input:checked + .toggle-box { background: var(--b-red); border-color: var(--b-red); }
+.betyarsors .toggle input:checked + .toggle-box::after {
+  content: "✕";
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+.betyarsors .toggle-label { font-size: 0.85rem; }
+
+/* ---------- Kattintható / item listák ---------- */
+.betyarsors .rollable { cursor: pointer; }
+.betyarsors .rollable:hover { color: var(--b-red); text-shadow: 0 0 6px rgba(163, 58, 42, 0.25); }
+
+.betyarsors .item-list { list-style: none; margin: 0; padding: 0; }
+.betyarsors .item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0.25rem;
+  border-bottom: 1px dotted var(--b-frame-light);
+  min-height: 2rem;
+}
+.betyarsors .item-list > li:last-child > .item-row,
+.betyarsors .item-list > .item-row:last-child { border-bottom: none; }
+.betyarsors .item-img { width: 26px; height: 26px; border: 1px solid var(--b-frame-light); border-radius: 2px; object-fit: cover; flex: none; }
+.betyarsors .item-name { font-weight: 500; }
+.betyarsors .item-meta { color: var(--b-ink-faint); font-style: italic; font-size: 0.85rem; }
+.betyarsors .item-controls { display: flex; gap: 0.5rem; margin-left: auto; color: var(--b-ink-faint); }
+.betyarsors .item-controls a:hover,
+.betyarsors .card-title a:hover,
+.betyarsors .item-group-header a:hover { color: var(--b-red); }
+.betyarsors .empty { color: var(--b-ink-faint); font-style: italic; padding: 0.25rem; list-style: none; margin: 0; }
+
+/* Portré */
+.betyarsors .profile-img {
+  border: 2px solid var(--b-frame);
+  outline: 1px solid var(--b-frame-light);
+  outline-offset: 2px;
+  border-radius: 2px;
+  background: var(--b-parchment-light);
+  object-fit: cover;
+  cursor: pointer;
+}
+
+/* Szövegszerkesztő */
+.betyarsors prose-mirror {
+  min-height: 120px;
+  --color-text-primary: var(--b-ink);
+}

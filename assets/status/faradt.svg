@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Fáradt: félig lehunyt, nehéz szemhéjú szem -->
+  <path d="M40 236 Q256 150 472 236 L472 262 Q256 214 40 262 Z" fill="#fff"/>
+  <path d="M56 250 Q256 420 456 250" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/>
+  <path d="M186 258 A70 70 0 0 0 326 258 Z" fill="#fff"/>
+  <g stroke="#fff" stroke-width="22" stroke-linecap="round">
+    <path d="M132 330 L110 372"/><path d="M200 356 L190 402"/><path d="M256 364 L256 412"/>
+    <path d="M312 356 L322 402"/><path d="M380 330 L402 372"/>
+  </g>
+</svg>

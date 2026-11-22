@@ -1,0 +1,29 @@
+<section class="card equipment">
+  <header class="card-title with-aside">
+    <h3>{{localize "BETYARSORS.Label.Equipment"}}</h3>
+    <div class="money">
+      <span>{{localize "BETYARSORS.Label.Money"}}:</span>
+      <input type="number" name="system.money.ft" value="{{system.money.ft}}" min="0" /><span>Ft</span>
+      <input type="number" name="system.money.kr" value="{{system.money.kr}}" min="0" /><span>kr</span>
+    </div>
+  </header>
+
+  {{#> "betyarsors.item-group" title=(localize "BETYARSORS.Label.Weapons") type="Fegyver" items=weapons expandable=true}}
+    <div class="equipment-item-heading">
+      <a class="rollable item-name" data-action="itemRoll" data-tooltip="BETYARSORS.Label.RollWeapon">{{item.name}}</a>
+      {{#each tags}}<span class="equipment-tag {{cls}}">{{label}}</span>{{/each}}
+    </div>
+  {{/"betyarsors.item-group"}}
+
+  {{#> "betyarsors.item-group" title=(localize "BETYARSORS.Label.Clothes") type="Ruha" items=clothes}}
+    <a class="item-name" data-action="itemEdit">{{item.name}}</a>
+    <span class="equipment-tag visibility">{{localize "BETYARSORS.Label.Visibility"}} {{item.system.visibility}}</span>
+  {{/"betyarsors.item-group"}}
+
+  {{#> "betyarsors.item-group" title=(localize "BETYARSORS.Label.Other") type="Targy" items=gear expandable=true}}
+    <div class="equipment-item-heading">
+      <span class="item-name">{{item.name}}</span>
+      {{#each tags}}<span class="equipment-tag {{cls}}">{{label}}</span>{{/each}}
+    </div>
+  {{/"betyarsors.item-group"}}
+</section>

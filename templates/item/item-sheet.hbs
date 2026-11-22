@@ -1,0 +1,150 @@
+<section class="betyarsors-sheet item-sheet">
+  <header class="card item-header">
+    <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" data-action="editImage" data-edit="img"
+         data-tooltip="BETYARSORS.Label.EditImage" />
+    <div class="header-fields">
+      <span class="item-type">{{typeLabel}}</span>
+      <input class="item-title" type="text" name="name" value="{{item.name}}" />
+    </div>
+  </header>
+
+  {{#if hasProperties}}
+  <section class="card item-properties">
+    {{#if isFegyver}}
+    <div class="field weapon-skill">
+      <span>{{localize "BETYARSORS.Label.CombatSkill"}}</span>
+      <div class="weapon-skill-row">
+        <select name="system.skill">
+          {{#each combatSkillOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+        {{!-- Kis ikon: Sorskocka más tulajdonságból --}}
+        <a class="weapon-attr-toggle {{#if showWeaponAttribute}}active{{/if}}" data-action="toggleWeaponAttribute"
+           data-tooltip="BETYARSORS.Label.WeaponAttributeTooltip"><i class="fa-solid fa-dice-d20"></i></a>
+      </div>
+    </div>
+    <label class="field">
+      <span>{{localize "BETYARSORS.Roll.GearDice"}}</span>
+      <select name="system.gearDice">
+        {{#each gearDiceOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </label>
+    <label class="field weapon-overflow" data-tooltip="BETYARSORS.Weapon.OverflowTooltip">
+      <span>{{localize "BETYARSORS.Weapon.Overflow"}}</span>
+      <input type="number" name="system.overflow" value="{{system.overflow}}" step="1" />
+    </label>
+    <div class="weapon-props">
+      <label class="field">
+        <span>{{localize "BETYARSORS.Weapon.Hands.Label"}}</span>
+        <select name="system.hands">
+          {{#each weaponHandsOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </label>
+      <label class="field">
+        <span>{{localize "BETYARSORS.Weapon.Range.Label"}}</span>
+        <select name="system.range">
+          {{#each weaponRangeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </label>
+      <label class="field">
+        <span>{{localize "BETYARSORS.Weapon.Mounted.Label"}}</span>
+        <select name="system.mounted">
+          {{#each weaponMountedOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </label>
+    </div>
+    {{#if showWeaponAttribute}}
+    <label class="field weapon-attribute">
+      <span>{{localize "BETYARSORS.Label.WeaponAttribute"}}</span>
+      <select name="system.attribute">
+        {{#each weaponAttributeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </label>
+    {{/if}}
+    {{/if}}
+
+    {{#if isFortely}}
+    {{!-- 1. sor: Típus (keskeny) | Melyik? | [☐ Előfeltétel]. Bejelölve a pipa + mező a 2. sorba kerül. --}}
+    <div class="fortely-row">
+      <label class="field fortely-kind">
+        <span>{{localize "BETYARSORS.Label.FortelyKind"}}</span>
+        <select name="system.kind">
+          {{#each fortelyKindOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </label>
+      {{#if fortelyNeedsSource}}
+      <label class="field fortely-source">
+        <span>{{localize "BETYARSORS.Label.FortelySource"}}</span>
+        <input type="text" name="system.source" value="{{system.source}}" placeholder="{{fortelySourcePlaceholder}}" />
+      </label>
+      {{else}}
+      <span class="fortely-source"></span>
+      {{/if}}
+      {{#unless system.hasPrerequisite}}
+      <div class="fortely-prereq-toggle">
+        {{> "betyarsors.toggle" name="system.hasPrerequisite" value=system.hasPrerequisite label=(localize "BETYARSORS.Label.Prerequisite")}}
+      </div>
+      {{/unless}}
+    </div>
+    {{#if system.hasPrerequisite}}
+    <div class="fortely-row prereq-row">
+      {{> "betyarsors.toggle" name="system.hasPrerequisite" value=system.hasPrerequisite label=(localize "BETYARSORS.Label.Prerequisite")}}
+      <input type="text" name="system.prerequisite" value="{{system.prerequisite}}"
+             placeholder="{{localize "BETYARSORS.Label.PrerequisitePlaceholder"}}" />
+    </div>
+    {{/if}}
+    {{/if}}
+
+    {{#if isTargy}}
+    <label class="field">
+      <span>{{localize "BETYARSORS.Label.Quantity"}}</span>
+      <input type="number" name="system.quantity" value="{{system.quantity}}" min="0" />
+    </label>
+    {{/if}}
+    {{#if hasVisibility}}
+    <label class="field">
+      <span>{{localize "BETYARSORS.Label.Visibility"}}</span>
+      <input type="number" name="system.visibility" value="{{system.visibility}}" step="1" />
+    </label>
+    {{/if}}
+  </section>
+  {{/if}}
+
+  {{#if isTargy}}
+  <section class="card item-gear">
+    <h3 class="card-title">{{localize "BETYARSORS.Roll.GearDice"}}</h3>
+    {{#each gearSkillRows}}
+    <label class="item-gear-row">
+      <span>{{label}}</span>
+      <select name="system.skillGearDice.{{key}}" {{#unless @root.editable}}disabled{{/unless}}>
+        {{#each options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </label>
+    {{else}}
+    <p class="empty">{{localize "BETYARSORS.RollSheet.GearReset"}}</p>
+    {{/each}}
+    {{#if editable}}
+    {{#if availableGearSkills.length}}
+    <details class="item-gear-add">
+      <summary>{{localize "BETYARSORS.Label.Add"}}</summary>
+      <div class="item-gear-row item-gear-picker">
+        <select data-gear-skill-picker aria-label="{{localize 'BETYARSORS.Label.Skills'}}">
+          <option value="" selected disabled>{{localize "BETYARSORS.Label.ChooseSkill"}}</option>
+          {{#each availableGearSkills}}<option value="{{value}}">{{label}}</option>{{/each}}
+        </select>
+        <select data-gear-dice-picker aria-label="{{localize 'BETYARSORS.Roll.GearDice'}}">
+          {{#each addGearDiceOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+        <button type="button" data-action="addGearSkill">{{localize "BETYARSORS.Label.Save"}}</button>
+      </div>
+    </details>
+    {{/if}}
+    {{/if}}
+  </section>
+  {{/if}}
+
+  <section class="card description">
+    <h3 class="card-title">{{localize "BETYARSORS.Label.Description"}}</h3>
+    {{formInput systemFields.description name="system.description" value=system.description
+                enriched=enrichedDescription toggled=true}}
+  </section>
+</section>

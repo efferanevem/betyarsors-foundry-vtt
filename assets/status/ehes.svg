@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Éhes: cipó bevágásokkal -->
+  <defs>
+    <mask id="cuts">
+      <rect width="512" height="512" fill="#fff"/>
+      <g stroke="#000" stroke-width="22" stroke-linecap="round">
+        <path d="M170 200 L215 262"/><path d="M240 180 L285 242"/><path d="M310 190 L350 245"/>
+      </g>
+    </mask>
+  </defs>
+  <path mask="url(#cuts)" fill="#fff" d="M56 318c0-118 90-190 200-190s200 72 200 190v26c0 26-21 46-46 46H102c-25 0-46-20-46-46z"/>
+  <rect x="40" y="410" width="432" height="26" rx="13" fill="#fff"/>
+</svg>

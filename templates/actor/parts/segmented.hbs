@@ -1,0 +1,8 @@
+<div class="segmented">
+  {{#each options}}
+  <label class="segment" {{#if tooltip}}data-tooltip="{{tooltip}}"{{/if}}>
+    <input type="radio" name="{{../name}}" value="{{value}}" {{checked isChecked}} hidden />
+    <span>{{label}}</span>
+  </label>
+  {{/each}}
+</div>

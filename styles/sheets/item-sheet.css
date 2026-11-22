@@ -1,0 +1,72 @@
+/* Közös item lap (Fortély, Fegyver, Ruha, Tárgy). */
+
+.betyarsors .item-sheet .item-header { display: flex; gap: 0.75rem; align-items: center; }
+.betyarsors .item-sheet .profile-img { width: 72px; height: 72px; }
+.betyarsors .item-sheet .header-fields { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
+.betyarsors .item-sheet .item-type { font-family: var(--b-font-sc); color: var(--b-ink-faint); font-size: 0.85rem; }
+.betyarsors .item-sheet .item-title {
+  height: auto;
+  box-shadow: none;
+  --input-background-color: transparent;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--b-frame);
+  border-radius: 0;
+  font-family: var(--b-font-sc);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.betyarsors .item-sheet .item-properties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+.betyarsors .item-sheet .item-properties:empty { display: none; }
+.betyarsors .item-sheet .description prose-mirror { min-height: 200px; }
+.betyarsors .item-sheet .item-gear { display: grid; gap: 0.4rem; }
+.betyarsors .item-sheet .item-gear-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 8rem;
+  gap: 0.6rem;
+  align-items: center;
+}
+.betyarsors .item-sheet .item-gear-row select { min-width: 0; }
+.betyarsors .item-sheet .item-gear-add summary { width: fit-content; cursor: pointer; font-weight: 600; }
+.betyarsors .item-sheet .item-gear-add summary:hover { color: var(--b-red); }
+.betyarsors .item-sheet .item-gear-picker {
+  grid-template-columns: minmax(0, 1fr) 4.5rem auto;
+  margin-top: 0.35rem;
+}
+
+/* Fortély: 1. sor Típus (keskeny) | Melyik? | Előfeltétel pipa; bejelölve 2. sor: pipa + mező */
+.betyarsors .item-sheet .item-properties:has(.fortely-row) { display: flex; flex-direction: column; gap: 0.55rem; }
+.betyarsors .item-sheet .fortely-row {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.6rem;
+}
+.betyarsors .item-sheet .fortely-prereq-toggle { padding-bottom: 0.35rem; white-space: nowrap; }
+.betyarsors .item-sheet .fortely-row.prereq-row { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+.betyarsors .item-sheet .fortely-row.prereq-row .toggle { white-space: nowrap; }
+
+/* Fegyver: Harci Jártasság + kis ikon a Sorskocka-felülíráshoz */
+.betyarsors .item-sheet .weapon-skill-row { display: flex; align-items: center; gap: 0.35rem; }
+.betyarsors .item-sheet .weapon-skill-row select { flex: 1; min-width: 0; }
+.betyarsors .item-sheet .weapon-attr-toggle {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border: 1px solid var(--b-frame-light);
+  border-radius: 50%;
+  color: var(--b-ink-faint);
+  font-size: 0.75rem;
+}
+.betyarsors .item-sheet .weapon-attr-toggle:hover { color: var(--b-red); border-color: var(--b-red); }
+.betyarsors .item-sheet .weapon-attr-toggle.active { background: var(--b-ink-soft); border-color: var(--b-ink-soft); color: var(--b-parchment-light); }
+
+/* Fegyver: Kézhasználat | Hatótáv | Lóháton – egy sorban, a teljes szélességben */
+.betyarsors .item-sheet .weapon-props { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+
+/* Fegyver első sora: Harci Jártasság | Felszereléskocka | Túlütés */
+.betyarsors .item-sheet .item-properties:has(.weapon-skill) { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) 5.5rem; }
+.betyarsors .item-sheet .weapon-overflow input { text-align: center; font-weight: 700; }
+.betyarsors .item-sheet .weapon-attribute { grid-column: 1 / 2; }

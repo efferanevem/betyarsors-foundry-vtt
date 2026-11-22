@@ -1,0 +1,214 @@
+/* Dobásablak */
+
+.application.betyarsors.roll-sheet .window-content { padding: 0.75rem 0.9rem; gap: 0.6rem; }
+.betyarsors .roll-sheet-body { display: flex; flex-direction: column; gap: 0.6rem; }
+.betyarsors .roll-sheet-header h3 {
+  margin: 0;
+  border: none;
+  font-family: var(--b-font-sc);
+  font-weight: 700;
+  font-size: 1.35rem;
+}
+.betyarsors .roll-sheet-meta { margin: 0; color: var(--b-ink-soft); font-style: italic; }
+.betyarsors .roll-sheet-warning { margin: 0.2rem 0 0; color: var(--b-red); font-weight: 700; }
+
+/* Előnyt / Hátrányt adó körülmények + összesítés */
+.betyarsors .roll-circumstances { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin-top: 0.35rem; }
+.betyarsors .circumstance {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.betyarsors .circumstance i { font-size: 0.65rem; }
+.betyarsors .circumstance.advantage { background: rgba(77, 107, 51, 0.16); color: var(--b-green); border: 1px solid rgba(77, 107, 51, 0.5); }
+.betyarsors .circumstance.disadvantage { background: rgba(163, 58, 42, 0.12); color: var(--b-red); border: 1px solid rgba(163, 58, 42, 0.45); }
+.betyarsors .circumstance-summary { flex-basis: 100%; font-size: 0.8rem; font-style: italic; color: var(--b-ink-soft); }
+.betyarsors .circumstance-summary[data-state="1"] { color: var(--b-green); }
+.betyarsors .circumstance-summary[data-state="-1"] { color: var(--b-red); }
+
+/* Dobás módja: Hátrány (piros) / Normál / Előny (zöld) – halvány, kiválasztva teli szín */
+/* Mezők: egységes két oszlopos rács (felirat | vezérlő), minden vezérlő kitölti a sort */
+.betyarsors .roll-sheet-fields {
+  --roll-control-height: 2.5rem;
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--b-frame-light);
+}
+.betyarsors .roll-sheet-label { font-family: var(--b-font-sc); font-size: 0.85rem; font-weight: 700; color: var(--b-ink-soft); }
+.betyarsors .roll-mode {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--b-frame);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.betyarsors .roll-mode-option { margin: 0; cursor: pointer; }
+.betyarsors .roll-mode-option > span {
+  display: grid;
+  place-items: center;
+  height: calc(var(--roll-control-height) - 2px);
+  text-align: center;
+  font-weight: 700;
+  border-right: 1px solid var(--b-frame-light);
+  transition: background 0.15s, color 0.15s;
+}
+.betyarsors .roll-mode-option:last-child > span { border-right: none; }
+
+.betyarsors .roll-mode-option.disadvantage > span { background: rgba(163, 58, 42, 0.14); color: var(--b-red); }
+.betyarsors .roll-mode-option.disadvantage:hover > span { background: rgba(163, 58, 42, 0.26); }
+.betyarsors .roll-mode-option.disadvantage input:checked + span { background: var(--b-red); color: #fff; }
+
+.betyarsors .roll-mode-option.normal > span { background: rgba(255, 250, 238, 0.45); color: var(--b-ink-soft); }
+.betyarsors .roll-mode-option.normal:hover > span { background: rgba(176, 132, 60, 0.2); }
+.betyarsors .roll-mode-option.normal input:checked + span { background: var(--b-ink-soft); color: var(--b-parchment-light); }
+
+.betyarsors .roll-mode-option.advantage > span { background: rgba(77, 107, 51, 0.14); color: var(--b-green); }
+.betyarsors .roll-mode-option.advantage:hover > span { background: rgba(77, 107, 51, 0.26); }
+.betyarsors .roll-mode-option.advantage input:checked + span { background: var(--b-green); color: #fff; }
+
+.betyarsors .roll-sheet-modifier { width: 100%; height: var(--roll-control-height); text-align: center; font-size: 1.05rem; font-weight: 700; }
+
+/* Felszereléskocka választó – kattintható d6-ok (mint a VotV morálkockái) */
+.betyarsors .gear-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: var(--roll-control-height);
+  border: 1px solid var(--b-frame-light);
+  border-radius: 3px;
+  background: rgba(255, 250, 238, 0.45);
+}
+.betyarsors .gear-die {
+  color: var(--b-blue);
+  opacity: 0.32;
+  cursor: pointer;
+  transition: opacity 0.12s, transform 0.12s;
+}
+.betyarsors .gear-die:hover { opacity: 0.65; transform: translateY(-1px); }
+.betyarsors .gear-die.selected { opacity: 1; }
+.betyarsors .gear-die.selected .die-icon .die-shape > * { fill-opacity: 0.35; }
+.betyarsors .gear-reset {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--b-frame-light);
+  border-radius: 50%;
+  font-size: 0.8rem;
+  color: var(--b-ink-faint);
+  cursor: pointer;
+}
+.betyarsors .gear-reset:hover { color: var(--b-red); border-color: var(--b-red); }
+
+/* Összesítő – kockapiktogramok */
+.betyarsors .roll-sheet-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.betyarsors .roll-sheet-dice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 3.6rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--b-frame-light);
+  border-radius: 3px;
+  background: rgba(255, 250, 238, 0.45);
+}
+.betyarsors .dice-chip {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 0.15rem;
+}
+.betyarsors .dice-count { font-size: 1.5rem; font-weight: 700; line-height: 1; color: var(--b-ink); }
+.betyarsors .dice-label {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 0.65rem;
+  line-height: 1.1;
+  color: var(--b-ink-faint);
+  white-space: nowrap;
+}
+.betyarsors .dice-op { font-size: 1.2rem; font-weight: 700; color: var(--b-ink-faint); padding-bottom: 0.8rem; }
+
+.betyarsors .die-icon { width: 38px; height: 38px; overflow: visible; }
+.betyarsors .die-icon .die-shape > * { fill: currentColor; fill-opacity: 0.16; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.betyarsors .die-icon text { fill: currentColor; font-family: var(--b-font); font-size: 11px; font-weight: 700; }
+
+.betyarsors .dice-chip.fate { color: var(--b-gold); }
+.betyarsors .dice-chip.fate .die-icon .die-shape > * { fill-opacity: 0.25; }
+.betyarsors .dice-chip.skill { color: var(--b-ink-soft); }
+.betyarsors .dice-chip.gear { color: var(--b-blue); }
+.betyarsors .dice-chip.modifier .dice-count { padding: 0 0.15rem; }
+.betyarsors .dice-chip.advantage { color: var(--b-green); }
+.betyarsors .dice-chip.disadvantage { color: var(--b-red); }
+.betyarsors .dice-chip.advantage .dice-label,
+.betyarsors .dice-chip.disadvantage .dice-label { color: inherit; font-weight: 700; }
+
+.betyarsors .roll-sheet-formula {
+  align-self: center;
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  color: var(--b-ink-faint);
+}
+
+/* Dobás gomb – teljes szélesség, hangsúlyos (a core lábléc-stílus csak .standard-form-ra vonatkozik) */
+.application.betyarsors.roll-sheet .form-footer { display: flex; margin-top: 0.2rem; }
+.application.betyarsors.roll-sheet .form-footer > button {
+  flex: 1;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, #5a4030, #3b2a1d);
+  border: 1px solid var(--b-gold);
+  border-radius: 3px;
+  color: var(--b-parchment-light);
+  font-family: var(--b-font-sc);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 3px rgba(40, 25, 10, 0.35);
+}
+.application.betyarsors.roll-sheet .form-footer > button:hover {
+  background: linear-gradient(180deg, #6b4c38, #4a3524);
+  box-shadow: 0 0 6px rgba(176, 132, 60, 0.6);
+}
+
+/* Felszereléskockát adó tárgyak listája (a Felszereléskocka alatt, a teljes szélességben) */
+.betyarsors .gear-items {
+  grid-column: 1 / -1;
+  list-style: none;
+  margin: -0.25rem 0 0;
+  padding: 0.25rem 0.5rem;
+  border: 1px dotted var(--b-frame-light);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.betyarsors .gear-item { display: flex; align-items: center; gap: 0.45rem; margin: 0; cursor: pointer; }
+.betyarsors .gear-item img { width: 22px; height: 22px; border: 1px solid var(--b-frame-light); border-radius: 2px; object-fit: cover; }
+.betyarsors .gear-item .gear-item-name { flex: 1; }
+.betyarsors .gear-item .gear-item-dice { font-weight: 700; color: var(--b-blue); }
+.betyarsors .gear-item .toggle-box {
+  width: 16px; height: 16px; flex: none; display: grid; place-items: center;
+  border: 1.5px solid var(--b-ink-soft); border-radius: 2px; background: rgba(255, 250, 238, 0.5);
+}
+.betyarsors .gear-item input:checked + .toggle-box { background: var(--b-blue); border-color: var(--b-blue); }
+.betyarsors .gear-item input:checked + .toggle-box::after { content: "✓"; color: #fff; font-size: 11px; font-weight: 700; line-height: 1; }
+.betyarsors .gear-cap-note { font-size: 0.75rem; font-style: italic; color: var(--b-red); }

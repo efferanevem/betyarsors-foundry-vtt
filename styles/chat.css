@@ -1,0 +1,75 @@
+/* Chat: próba fejléc, eredmény feliratok (module/util/chat.mjs), item kártya. */
+
+/* A chatkártya mindig pergamen → rögzített tintaszín (a téma szövegszíne sötét témában világos lenne). */
+.betyarsors-roll-flavor { font-family: var(--b-font); color: #2a1d12; }
+.betyarsors-roll-flavor .betyarsors-roll-title { font-weight: 700; font-size: 1.15em; }
+.betyarsors-roll-flavor .betyarsors-roll-subtitle { font-style: italic; color: #5a4632; font-size: 0.9em; }
+.betyarsors-roll-flavor .betyarsors-roll-note { color: var(--b-red); font-size: 0.85em; }
+.betyarsors-roll-reroll { font-family: var(--b-font); font-size: 0.85em; font-style: italic; color: #8a6a2e; }
+.betyarsors-roll-reroll::before { content: "↻ "; font-style: normal; }
+
+/* Sorskocka újradobása – kis ↻ gomb a dobás összegének jobb szélén (module/util/chat.mjs) */
+.chat-message .dice-total.betyarsors-has-reroll { position: relative; }
+.chat-message button.betyarsors-reroll {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  /* A core minden gombra min-height: var(--button-size) (2em) szabályt tesz – ezt is felül kell írni. */
+  --button-size: 16px;
+  width: auto;
+  height: 16px;
+  min-height: 0;
+  max-height: 16px;
+  min-width: 0;
+  padding: 0 4px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(176, 132, 60, 0.18);
+  border: 1px solid #7a5a36;
+  border-radius: 8px;
+  color: #45321f;
+  font-family: "Alegreya", Georgia, serif;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.chat-message button.betyarsors-reroll i { font-size: 8px; }
+.chat-message button.betyarsors-reroll:hover:not(:disabled) { background: #4a3423; border-color: #b0843c; color: #f8efdc; }
+.chat-message button.betyarsors-reroll:disabled { opacity: 0.35; cursor: not-allowed; }
+/* NJK (Végzetből) – vöröses, hogy látszódjon: ez a Mesélő Végzetébe kerül */
+.chat-message button.betyarsors-reroll.doom { background: rgba(163, 58, 42, 0.14); border-color: #9c3a26; color: #7a2a1a; }
+.chat-message button.betyarsors-reroll.doom:hover:not(:disabled) { background: #6e2617; border-color: #d6a34b; color: #f8efdc; }
+
+/* Újradobott (felülírt) eredmény: halványabb összeg, kis ↻ jel, áthúzott hatások */
+.chat-message .dice-total.betyarsors-superseded { opacity: 0.55; text-decoration: line-through; text-decoration-thickness: 1px; }
+.chat-message .betyarsors-rerolled-mark {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  color: #7a5a36;
+  text-decoration: none;
+}
+.betyarsors-result-label.voided { opacity: 0.45; text-decoration: line-through; }
+
+.betyarsors-result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 0.3rem;
+  font-family: var(--b-font);
+  text-align: center;
+}
+.betyarsors-result-label { font-weight: 700; padding: 1px 4px; border-radius: 3px; }
+.betyarsors-result-fate { color: #fff; background: var(--b-gold); }
+.betyarsors-result-doom { color: #fff; background: var(--b-ink-soft); }
+
+.betyarsors-item-card header { display: flex; align-items: center; gap: 0.5rem; }
+.betyarsors-item-card header img { width: 32px; height: 32px; border: none; }
+.betyarsors-item-card header h3 { margin: 0; border: none; font-family: var(--b-font); }
+.betyarsors-item-card-body { font-family: var(--b-font); }

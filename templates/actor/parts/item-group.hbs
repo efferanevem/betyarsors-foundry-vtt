@@ -1,0 +1,39 @@
+<div class="item-group">
+  <div class="item-group-header">
+    <span>{{title}}</span>
+    {{#if @root.editable}}
+    <a data-action="itemCreate" data-type="{{type}}" data-tooltip="BETYARSORS.Label.Add"><i class="fa-solid fa-plus"></i></a>
+    {{/if}}
+  </div>
+  {{#*inline "betyarsors.equipment-row"}}
+    <img class="item-img" src="{{item.img}}" alt="" />
+    {{> @partial-block}}
+    <span class="item-controls">
+      <a data-action="itemChat" data-tooltip="BETYARSORS.Label.ToChat"><i class="fa-solid fa-comment"></i></a>
+      <a data-action="itemEdit" data-tooltip="BETYARSORS.Label.Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+      {{#if @root.editable}}<a data-action="itemDelete" data-tooltip="BETYARSORS.Label.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
+    </span>
+  {{/inline}}
+  <ol class="item-list{{#if expandable}} expandable-item-list{{/if}}">
+    {{#each items}}
+    {{#if ../expandable}}
+    <li class="draggable" data-item-id="{{item.id}}">
+      <details>
+        <summary>
+          <div class="item-row">{{> "betyarsors.equipment-row"}}</div>
+        </summary>
+        <div class="equipment-description">
+          {{#if description}}{{{description}}}{{else}}<em class="empty">{{localize "BETYARSORS.Label.NoDescription"}}</em>{{/if}}
+        </div>
+      </details>
+    </li>
+    {{else}}
+    <li class="item-row draggable" data-item-id="{{item.id}}">
+      {{> "betyarsors.equipment-row"}}
+    </li>
+    {{/if}}
+    {{else}}
+    <li class="empty">{{localize "BETYARSORS.Label.Empty"}}</li>
+    {{/each}}
+  </ol>
+</div>
