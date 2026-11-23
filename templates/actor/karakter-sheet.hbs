@@ -86,6 +86,14 @@
         <div class="injury-recovery">
           <input type="number" name="system.injuries.{{index}}.recoveryAmount" value="{{recoveryAmount}}" min="0" step="1"
                  aria-label="{{localize 'BETYARSORS.Label.InjuryRecovery'}}" />
+          {{#if @root.editable}}
+          <span class="stepper horizontal" role="group" aria-label="{{localize 'BETYARSORS.Label.InjuryRecovery'}}">
+            <button type="button" data-action="stepRecovery" data-delta="-1" data-tooltip="BETYARSORS.Label.Decrease"
+                    aria-label="{{localize 'BETYARSORS.Label.Decrease'}}" {{#unless recoveryAmount}}disabled{{/unless}}>▼</button>
+            <button type="button" data-action="stepRecovery" data-delta="1" data-tooltip="BETYARSORS.Label.Increase"
+                    aria-label="{{localize 'BETYARSORS.Label.Increase'}}">▲</button>
+          </span>
+          {{/if}}
           <select name="system.injuries.{{index}}.recoveryUnit" aria-label="{{localize 'BETYARSORS.Label.InjuryRecoveryUnit'}}">
             {{selectOptions @root.recoveryUnits selected=recoveryUnit localize=true}}
           </select>

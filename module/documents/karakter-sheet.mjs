@@ -15,6 +15,7 @@ export class BetyarsorsKarakterSheet extends BetyarsorsCreatureSheet {
     position: { width: 860, height: 820 },
     actions: {
       injuryAdd: BetyarsorsKarakterSheet.#onInjuryAdd,
+      stepRecovery: BetyarsorsKarakterSheet.#onStepRecovery,
       injuryDelete: BetyarsorsKarakterSheet.#onInjuryDelete
     }
   };
@@ -45,6 +46,17 @@ export class BetyarsorsKarakterSheet extends BetyarsorsCreatureSheet {
     return context;
   }
 
+  _onRender(context, options) {
+    super._onRender(context, options);
+    for (const stepper of this.element.querySelectorAll(".injury-recovery .stepper")) {
+      const input = stepper.parentElement.querySelector('input[type="number"]');
+      const decrease = stepper.querySelector('[data-delta="-1"]');
+      input.oninput = () => { decrease.disabled = !(input.valueAsNumber > 0); };
+      // A fókuszváltás mentené a beírt számot és újrarajzolná a gombot a kattintás előtt.
+      stepper.onpointerdown = (event) => { if (event.button === 0) event.preventDefault(); };
+    }
+  }
+
   /** Az ArrayField soraihoz csak a látható mezők érkeznek az űrlapról. */
   _processFormData(event, form, formData) {
     const data = super._processFormData(event, form, formData);
@@ -70,6 +82,14 @@ export class BetyarsorsKarakterSheet extends BetyarsorsCreatureSheet {
   static async #onInjuryAdd() {
     const injuries = [...this.document.system.injuries, {}];
     await this.document.update({ "system.injuries": injuries });
+  }
+
+  static #onStepRecovery(_event, target) {
+    if (!this.isEditable) return;
+    const input = target.closest(".injury-recovery").querySelector('input[type="number"]');
+    const previous = input.value;
+    input.stepUp(Number(target.dataset.delta));
+    if (input.value !== previous) input.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
   static async #onInjuryDelete(_event, target) {
