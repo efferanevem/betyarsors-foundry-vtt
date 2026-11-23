@@ -15,8 +15,10 @@
     </div>
   {{/"betyarsors.item-group"}}
 
-  {{#> "betyarsors.item-group" title=(localize "BETYARSORS.Label.Clothes") type="Ruha" items=clothes}}
-    <a class="item-name" data-action="itemEdit">{{item.name}}</a>
+  {{#> "betyarsors.item-group" title=(localize "BETYARSORS.Label.Clothes") type="Ruha" items=clothes expandable=true}}
+    <div class="equipment-item-heading">
+      <span class="item-name">{{item.name}}</span>
+    </div>
   {{/"betyarsors.item-group"}}
 
   {{#> "betyarsors.item-group" title=(localize "BETYARSORS.Label.Other") type="Targy" items=gear expandable=true}}

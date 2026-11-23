@@ -164,7 +164,10 @@ export class BetyarsorsCreatureSheet extends BetyarsorsActorSheet {
         };
       })
     );
-    context.clothes = byType("Ruha").map((item) => ({ item }));
+    context.clothes = await Promise.all(byType("Ruha").map(async (item) => ({
+      item,
+      description: await enrichItemDescription(item)
+    })));
     const gearSkills = Object.entries({ ...cfg.skills, ...cfg.combatSkills });
     context.gear = await Promise.all(byType("Targy").map(async (item) => {
       const { quantity, skillGearDice = {} } = item.system;
