@@ -136,7 +136,7 @@
   color: var(--b-ink-soft);
 }
 
-/* Szegmentált választó (radio) – pl. Becsület, ló állapot */
+/* Szegmentált választó a hírnévskálákhoz */
 .betyarsors .segmented {
   display: inline-flex;
   flex-wrap: wrap;

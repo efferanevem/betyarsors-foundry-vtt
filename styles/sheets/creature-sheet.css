@@ -298,9 +298,32 @@
 .betyarsors .injury-recovery small { grid-column: 1 / -1; overflow-wrap: anywhere; color: var(--b-ink-soft); }
 
 /* ---------- Ló ---------- */
-.betyarsors .creature-sheet .horse { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }
-.betyarsors .creature-sheet .horse .card-title { grid-column: 1 / -1; margin-bottom: 0; }
-.betyarsors .creature-sheet .horse-fields { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 0.6rem; }
+.betyarsors .horse { container: horse / inline-size; padding: 0.8rem 1rem 1rem; }
+.betyarsors .horse .card-title { margin-bottom: 0.75rem; }
+.betyarsors .horse .card-title::before { content: none; }
+.betyarsors .horse .card-title i { color: var(--b-red); }
+.betyarsors .horse-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.25rem; }
+.betyarsors .horse-fields,
+.betyarsors .horse-state { display: grid; align-content: start; gap: 0.75rem 1rem; }
+.betyarsors .horse-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.betyarsors .horse .field { gap: 0.25rem; }
+.betyarsors .horse-bonuses { grid-column: 1 / -1; }
+.betyarsors .horse-bonuses textarea { width: 100%; min-height: 3rem; resize: vertical; font: inherit; }
+.betyarsors .horse-state { padding-inline-start: 1.25rem; border-inline-start: 1px solid var(--b-frame-light); }
+
+@container horse (max-width: 34rem) {
+  .betyarsors .horse-layout { grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
+  .betyarsors .horse-state {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0.8rem 0 0;
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--b-frame-light);
+  }
+}
+@container horse (max-width: 23rem) {
+  .betyarsors .horse-fields,
+  .betyarsors .horse-state { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* ---------- Jegyzetek ---------- */
 .betyarsors .creature-sheet .notes prose-mirror { min-height: 140px; }
