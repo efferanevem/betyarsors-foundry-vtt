@@ -13,7 +13,7 @@ import { SYSTEM_ID, BETYARSORS } from "../config.mjs";
  *   0–1 Súrolás, 2–4 Seb, 5–7 Súlyos seb, 8+ Halálos seb (CONFIG.BETYARSORS.overflowLevels).
  *   Az eredmény a támadás és a védekezés kártyáján is megjelenik, és frissül, ha bármelyiket újradobják.
  *
- * - Találat esetén (Súrolás is) a támadás kártyáján célpontonként dobható találati hely (d4).
+ * - A támadás fejlécéből már a védekezés előtt dobható találati hely (d4), célpontonként egyszer.
  *
  * TODO(szabály): seb felírása a célpont lapjára.
  */
@@ -101,7 +101,7 @@ export function hitLocationLabel(result) {
 }
 
 /**
- * Találati hely dobása (d4) – találatonként egyszer. Az eredmény chatüzenet (flag: hitLocation),
+ * Találati hely dobása (d4) – célpontonként egyszer. Az eredmény chatüzenet (flag: hitLocation),
  * és a támadás, illetve a védekezés kártyáján is megjelenik.
  */
 export async function rollHitLocation(attackRootId, targetKey, targetName) {
@@ -127,10 +127,11 @@ function canRollHitLocation(attackRoot, target) {
   return !!(attacker?.isOwner || defenderOf(target)?.isOwner);
 }
 
-function resultLine(attackMsg, defenseMsg, target, { showHitLocationButton = false } = {}) {
+function opposedResult(attackMsg, defenseMsg, target) {
+  if (!defenseMsg) return null;
   const a = finalOf(attackMsg)?.rolls?.[0]?.total;
   const d = finalOf(defenseMsg)?.rolls?.[0]?.total;
-  if (!Number.isFinite(a) || !Number.isFinite(d)) return "";
+  if (!Number.isFinite(a) || !Number.isFinite(d)) return null;
   const attackMod = Number(flagsOf(attackMsg).attack?.overflowMod) || 0;
   const sickBonus = target?.wasSick ? 1 : 0;
   const clothing = flagsOf(defenseMsg).defense?.clothingModifiers ?? [];
@@ -143,38 +144,58 @@ function resultLine(attackMsg, defenseMsg, target, { showHitLocationButton = fal
   ].filter(Boolean).join(", ");
   const key = r.hit && modifiers ? "BETYARSORS.Attack.ResultFormulaMod" : r.hit ? "BETYARSORS.Attack.ResultFormula" : "BETYARSORS.Attack.ResultFormulaMiss";
   const formula = game.i18n.format(key, { attack: a, defense: d, raw: r.raw, modifiers, overflow: r.overflow });
-  let locationLabel = "";
-  let locationButton = "";
-  if (r.hit && target) {
-    const root = rootOf(attackMsg);
-    const hit = findHitLocation(root.id, target.key);
-    if (hit) {
-      locationLabel = `<span class="hit-location"><i class="fa-solid fa-location-dot"></i> ${esc(flagsOf(hit).hitLocation.label)}</span>`;
-    } else if (showHitLocationButton && canRollHitLocation(root, target)) {
-      locationButton = `<button type="button" class="betyarsors-hit-location" data-attack-id="${esc(root.id)}"
-        data-target-key="${esc(target.key)}" data-target-name="${esc(target.name)}"
-        data-tooltip="${esc(L("BETYARSORS.HitLocation.Button"))}" aria-label="${esc(L("BETYARSORS.HitLocation.Button"))}">
-        <i class="fa-solid fa-person-burst" inert></i></button>`;
-    }
-  }
-  return `<div class="betyarsors-overflow ${r.key}">
-    <span class="overflow-calc">${esc(formula)}</span>
-    ${locationButton}
-    <strong class="overflow-label">${esc(r.label)}</strong>
-    ${locationLabel}
+  return { ...r, formula };
+}
+
+function hitLocationLine(message) {
+  if (!message) return "";
+  return `<span class="hit-location"><i class="fa-solid fa-location-dot"></i> ${esc(flagsOf(message).hitLocation.label)}</span>`;
+}
+
+function resultLine(result, location) {
+  return `<div class="betyarsors-overflow ${result.key}">
+    <span class="overflow-calc">${esc(result.formula)}</span>
+    <strong class="overflow-label">${esc(result.label)}</strong>
+    ${result.hit ? hitLocationLine(location) : ""}
   </div>`;
 }
 
-/** A kártyán lévő "Találati hely (d4)" gombok bekötése. */
-function bindHitLocationButtons(root) {
-  for (const btn of root.querySelectorAll(".betyarsors-hit-location")) {
-    btn.addEventListener("click", async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      btn.disabled = true;
-      await rollHitLocation(btn.dataset.attackId, btn.dataset.targetKey, btn.dataset.targetName);
-    });
-  }
+function hitLocationButton(attackRoot, targets) {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "betyarsors-hit-location";
+  btn.dataset.tooltip = L("BETYARSORS.HitLocation.Button");
+  btn.setAttribute("aria-label", btn.dataset.tooltip);
+  btn.innerHTML = '<i class="fa-solid fa-person-burst" inert></i>';
+  btn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    btn.disabled = true;
+    try {
+      let target = targets[0];
+      if (targets.length > 1) {
+        const options = targets.map((t) => `<option value="${esc(t.key)}">${esc(t.name)}</option>`).join("");
+        const key = await foundry.applications.api.DialogV2.wait({
+          window: { title: L("BETYARSORS.HitLocation.Button"), icon: "fa-solid fa-person-burst" },
+          classes: ["betyarsors-dialog"],
+          content: `<label>${esc(L("BETYARSORS.HitLocation.ChooseTarget"))} <select name="targetKey">${options}</select></label>`,
+          buttons: [{
+            action: "roll", label: L("BETYARSORS.RollSheet.Roll"), default: true,
+            callback: (_event, button) => button.form.elements.targetKey.value
+          }],
+          rejectClose: false
+        });
+        target = targets.find((t) => t.key === key);
+      }
+      if (!target || !canRollHitLocation(attackRoot, target)) return;
+      const defense = findDefense(attackRoot.id, target.key);
+      if (opposedResult(attackRoot, defense, target)?.hit === false) return;
+      await rollHitLocation(attackRoot.id, target.key, target.name);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+  return btn;
 }
 
 /** Védekezés választó: mivel védekezik? (fegyverek, Dulakodás, Lovaglás) → dobásablak. */
@@ -248,15 +269,20 @@ export function decorateCombatMessage(message, html, superseded) {
     box.className = "betyarsors-attack";
     const mod = flags.attack.overflowMod ?? 0;
     const modText = mod ? ` <span class="overflow-mod-tag">${esc(game.i18n.format("BETYARSORS.Attack.OverflowModTag", { mod: mod > 0 ? `+${mod}` : mod }))}</span>` : "";
-    box.innerHTML = `<div class="attack-head"><i class="fa-solid fa-crosshairs"></i> ${esc(L("BETYARSORS.Attack.Title"))}${modText}</div>`;
+    box.innerHTML = `<div class="attack-head"><span><i class="fa-solid fa-crosshairs"></i> ${esc(L("BETYARSORS.Attack.Title"))}${modText}</span></div>`;
+    const rollableTargets = [];
     for (const target of flags.attack.targets) {
       const row = document.createElement("div");
       row.className = "attack-target";
       row.innerHTML = `<img src="${esc(target.img)}" alt="" /><span class="target-name">${esc(target.name)}</span>`;
       const defenseMsg = findDefense(root.id, target.key);
-      if (defenseMsg) {
-        const result = resultLine(message, defenseMsg, target, { showHitLocationButton: true });
-        row.insertAdjacentHTML("beforeend", result || `<em>${esc(L("BETYARSORS.Attack.Defended"))}</em>`);
+      const location = findHitLocation(root.id, target.key);
+      const result = opposedResult(root, defenseMsg, target);
+      if (!location && result?.hit !== false && canRollHitLocation(root, target)) rollableTargets.push(target);
+      if (result) {
+        row.insertAdjacentHTML("beforeend", resultLine(result, location));
+      } else if (defenseMsg) {
+        row.insertAdjacentHTML("beforeend", `<em>${esc(L("BETYARSORS.Attack.Defended"))}</em>`);
       } else if (defenderOf(target)?.isOwner) {
         const btn = document.createElement("button");
         btn.type = "button";
@@ -271,9 +297,10 @@ export function decorateCombatMessage(message, html, superseded) {
       } else {
         row.insertAdjacentHTML("beforeend", `<em class="awaiting">${esc(L("BETYARSORS.Attack.Awaiting"))}</em>`);
       }
+      if (!result && location) row.insertAdjacentHTML("beforeend", hitLocationLine(location));
       box.append(row);
     }
-    bindHitLocationButtons(box);
+    if (rollableTargets.length) box.querySelector(".attack-head").append(hitLocationButton(root, rollableTargets));
     content.append(box);
   }
 
@@ -287,7 +314,8 @@ export function decorateCombatMessage(message, html, superseded) {
     )}</div>`;
     if (attackMsg) {
       const target = flagsOf(attackMsg).attack?.targets?.find((t) => t.key === flags.defense.targetKey) ?? null;
-      box.insertAdjacentHTML("beforeend", resultLine(attackMsg, rootOf(message), target));
+      const result = opposedResult(attackMsg, rootOf(message), target);
+      if (result) box.insertAdjacentHTML("beforeend", resultLine(result, findHitLocation(attackMsg.id, flags.defense.targetKey)));
     }
     content.append(box);
   }

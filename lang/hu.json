@@ -247,6 +247,7 @@
   "BETYARSORS.HitLocation.4": "Fej / nyak",
   "BETYARSORS.HitLocation.Title": "Találati hely",
   "BETYARSORS.HitLocation.Button": "Találati hely dobása",
+  "BETYARSORS.HitLocation.ChooseTarget": "Melyik célponthoz dobsz találati helyet?",
   "BETYARSORS.HitLocation.Already": "Erre a találatra már dobtak találati helyet.",
   "BETYARSORS.Label.WeaponAttribute": "Sorskocka",
   "BETYARSORS.Label.WeaponAttributeDefault": "A jártasságé ({attribute})",

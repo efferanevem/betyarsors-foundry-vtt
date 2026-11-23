@@ -91,8 +91,13 @@
   font-size: 0.9rem;
   margin-bottom: 0.25rem;
 }
-.chat-message .betyarsors-attack .attack-head i { color: #9c3a26; margin-right: 0.2rem; }
-.chat-message .betyarsors-attack.defense .attack-head i { color: #3f5d7d; }
+.chat-message .betyarsors-attack:not(.defense) .attack-head {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.chat-message .betyarsors-attack .attack-head .fa-crosshairs { color: #9c3a26; margin-right: 0.2rem; }
+.chat-message .betyarsors-attack.defense .attack-head i { color: #3f5d7d; margin-right: 0.2rem; }
 
 .chat-message .betyarsors-attack .attack-target {
   display: flex;
@@ -129,6 +134,7 @@
 .chat-message .betyarsors-overflow {
   flex-basis: 100%;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.4rem;
@@ -178,9 +184,7 @@
 .application.betyarsors-dialog .form-footer { flex-wrap: wrap; gap: 0.5rem; }
 .application.betyarsors-dialog .form-footer button { flex: 1 1 auto; padding: 0 0.8rem; }
 
-/* Találati hely: gomb az eredmény sorában, kidobott eredmény, és a d4 chatkártya */
-.chat-message .betyarsors-overflow { flex-wrap: wrap; }
-/* Kicsi kerek ikon-gomb a Túlütés-címke mellett (a core gomb min-magasságát is felülírva) */
+/* Találati hely: a támadás fejlécének jobb szélén lévő gomb, az eredmény és a d4 chatkártya */
 .chat-message button.betyarsors-hit-location {
   --button-size: 20px;
   flex: none;
@@ -202,8 +206,7 @@
 }
 .chat-message button.betyarsors-hit-location:hover { background: #9c3a26; color: #f8efdc; }
 .chat-message button.betyarsors-hit-location:disabled { opacity: 0.4; }
-.chat-message .betyarsors-overflow button.betyarsors-hit-location + .overflow-label { margin-left: 0; }
-.chat-message .betyarsors-overflow .hit-location {
+.chat-message .betyarsors-attack .hit-location {
   flex-basis: 100%;
   margin-top: 0.15rem;
   font-weight: 700;
