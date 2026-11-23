@@ -2,7 +2,7 @@ import { SYSTEM_PATH, BETYARSORS, getSkillDef, getSkillGroup } from "../config.m
 import { buildCheckFormula, rollCheck } from "../util/roll.mjs";
 import { diceChipHTML, dieIconSVG } from "../util/dice-icons.mjs";
 import { collectRollCircumstances } from "../util/roll-circumstances.mjs";
-import { captureTargets } from "../combat/attack.mjs";
+import { captureAttack, captureTargets } from "../combat/attack.mjs";
 import { gearItemsFor } from "../util/gear-items.mjs";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -229,7 +229,7 @@ export class BetyarsorsRollSheet extends HandlebarsApplicationMixin(ApplicationV
       gearDice,
       modifier,
       notes,
-      extraFlags: this.defense ? { defense: this.defense } : this.targets.length ? { attack: { targets: this.targets, overflowMod } } : {}
+      extraFlags: this.defense ? { defense: this.defense } : this.targets.length ? { attack: captureAttack(this.targets, overflowMod) } : {}
     });
   }
 }

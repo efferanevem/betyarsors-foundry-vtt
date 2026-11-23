@@ -134,12 +134,8 @@ export const BETYARSORS = {
    * A többi állapotnak (Éhes, Szomjas, Fáradt, Megvakított, Megsüketített, Megragadott, Meggyulladt,
    * Fuldokló, Alvó, Elesett, Elrejtőzött, Eszméletlen, Rémült) egyelőre nincs gépi hatása – a Mesélő kezeli.
    *
-   * ######################################################################################
-   * ##  TODO(szabály): BETEG állapot – MÉG MEG KELL CSINÁLNI!                            ##
-   * ##  A könyv szerint: amíg Beteg, semmilyen sebesülése nem gyógyul, és minden ellene  ##
-   * ##  irányuló sikeres támadás +1 Túlütést kap. Ehhez kell a harc/Túlütés és a        ##
-   * ##  gyógyulás kezelése – addig a Beteg állapot csak jelölés, nincs gépi hatása.      ##
-   * ######################################################################################
+   * A Beteg célpont elleni találat +1 Túlütését a module/combat/attack.mjs kezeli.
+   * TODO(szabály): Beteg állapotban a sebesülések gyógyulása szünetel.
    */
   statusRollEffects: {
     reszeg: { effect: "disadvantage", scope: "all" },

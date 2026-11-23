@@ -7,13 +7,14 @@ import { SYSTEM_ID, BETYARSORS } from "../config.mjs";
  * - A támadás kártyáján célpontonként "Védekezés" gomb (a célpont tulajdonosának / a Mesélőnek):
  *   fegyverrel (a fegyver Harci Jártasságával és Felszereléskockáival), Dulakodással vagy Lovaglással.
  * - A védekezés próbája flag `defense: { attackId, targetKey }` – a támadás GYÖKÉR üzenetére hivatkozik.
- * - Túlütés = a támadás VÉGSŐ eredménye − a védekezés VÉGSŐ eredménye (újradobás után az új dobás számít);
- *   negatív: nem talált; 0–1 Súrolás, 2–4 Seb, 5–7 Súlyos seb, 8+ Halálos seb (CONFIG.BETYARSORS.overflowLevels).
+ * - A támadás és a védekezés végső eredményének különbsége dönti el a találatot. A negatív különbség mellémegy.
+ *   Találatkor a különbséghez hozzáadódik a támadás Túlütés módosítója és Beteg célpont ellen további +1.
+ *   0–1 Súrolás, 2–4 Seb, 5–7 Súlyos seb, 8+ Halálos seb (CONFIG.BETYARSORS.overflowLevels).
  *   Az eredmény a támadás és a védekezés kártyáján is megjelenik, és frissül, ha bármelyiket újradobják.
  *
  * - Találat esetén (Súrolás is) "Találati hely (d4)" gomb: testrész + tulajdonság (CONFIG.BETYARSORS.hitLocations).
  *
- * TODO(szabály): Beteg célpont +1 Túlütés, seb felírása a célpont lapjára.
+ * TODO(szabály): seb felírása a célpont lapjára.
  */
 
 const L = (k) => game.i18n.localize(k);
@@ -72,6 +73,17 @@ function defenderOf(target) {
   return fromUuidSync(target.tokenUuid)?.actor ?? fromUuidSync(target.actorUuid) ?? null;
 }
 
+/** A célpontok Beteg állapotát a támadódobáskor rögzítjük az újradobásokhoz is. */
+export function captureAttack(targets, overflowMod) {
+  return {
+    targets: targets.map((target) => ({
+      ...target,
+      wasSick: defenderOf(target)?.statuses?.has("beteg") ?? false
+    })),
+    overflowMod
+  };
+}
+
 /** A találati hely dobása egy támadás adott célpontjára (ha már dobtak). */
 function findHitLocation(attackRootId, targetKey) {
   return game.messages.find((m) => {
@@ -118,10 +130,15 @@ function resultLine(attackMsg, defenseMsg, target = null) {
   const a = finalOf(attackMsg)?.rolls?.[0]?.total;
   const d = finalOf(defenseMsg)?.rolls?.[0]?.total;
   if (!Number.isFinite(a) || !Number.isFinite(d)) return "";
-  const mod = flagsOf(attackMsg).attack?.overflowMod ?? 0;
-  const r = overflowResult(a, d, mod);
-  const key = r.hit && r.mod ? "BETYARSORS.Attack.ResultFormulaMod" : r.hit ? "BETYARSORS.Attack.ResultFormula" : "BETYARSORS.Attack.ResultFormulaMiss";
-  const formula = game.i18n.format(key, { attack: a, defense: d, raw: r.raw, mod: r.mod > 0 ? `+${r.mod}` : r.mod, overflow: r.overflow });
+  const attackMod = Number(flagsOf(attackMsg).attack?.overflowMod) || 0;
+  const sickBonus = target?.wasSick ? 1 : 0;
+  const r = overflowResult(a, d, attackMod + sickBonus);
+  const modifiers = [
+    attackMod ? `${attackMod > 0 ? "+" : ""}${attackMod} ${L("BETYARSORS.RollSheet.ModifierShort")}` : "",
+    sickBonus ? `+${sickBonus} (${L("BETYARSORS.Status.beteg")})` : ""
+  ].filter(Boolean).join(", ");
+  const key = r.hit && modifiers ? "BETYARSORS.Attack.ResultFormulaMod" : r.hit ? "BETYARSORS.Attack.ResultFormula" : "BETYARSORS.Attack.ResultFormulaMiss";
+  const formula = game.i18n.format(key, { attack: a, defense: d, raw: r.raw, modifiers, overflow: r.overflow });
   // Találat (Súrolás is): találati hely – kidobott eredmény, vagy d4 gomb
   let location = "";
   if (r.hit && target) {
