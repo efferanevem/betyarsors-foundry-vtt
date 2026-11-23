@@ -13,7 +13,7 @@ import { SYSTEM_ID, BETYARSORS } from "../config.mjs";
  *   0–1 Súrolás, 2–4 Seb, 5–7 Súlyos seb, 8+ Halálos seb (CONFIG.BETYARSORS.overflowLevels).
  *   Az eredmény a támadás és a védekezés kártyáján is megjelenik, és frissül, ha bármelyiket újradobják.
  *
- * - Találat esetén (Súrolás is) "Találati hely (d4)" gomb: testrész + tulajdonság (CONFIG.BETYARSORS.hitLocations).
+ * - Találat esetén (Súrolás is) a támadás kártyáján célpontonként dobható találati hely (d4).
  *
  * TODO(szabály): seb felírása a célpont lapjára.
  */
@@ -102,7 +102,7 @@ export function hitLocationLabel(result) {
 
 /**
  * Találati hely dobása (d4) – találatonként egyszer. Az eredmény chatüzenet (flag: hitLocation),
- * és a támadás / védekezés kártyáján a gomb helyén megjelenik.
+ * és a támadás, illetve a védekezés kártyáján is megjelenik.
  */
 export async function rollHitLocation(attackRootId, targetKey, targetName) {
   if (findHitLocation(attackRootId, targetKey)) return ui.notifications.warn(L("BETYARSORS.HitLocation.Already"));
@@ -127,7 +127,7 @@ function canRollHitLocation(attackRoot, target) {
   return !!(attacker?.isOwner || defenderOf(target)?.isOwner);
 }
 
-function resultLine(attackMsg, defenseMsg, target = null) {
+function resultLine(attackMsg, defenseMsg, target, { showHitLocationButton = false } = {}) {
   const a = finalOf(attackMsg)?.rolls?.[0]?.total;
   const d = finalOf(defenseMsg)?.rolls?.[0]?.total;
   if (!Number.isFinite(a) || !Number.isFinite(d)) return "";
@@ -143,26 +143,25 @@ function resultLine(attackMsg, defenseMsg, target = null) {
   ].filter(Boolean).join(", ");
   const key = r.hit && modifiers ? "BETYARSORS.Attack.ResultFormulaMod" : r.hit ? "BETYARSORS.Attack.ResultFormula" : "BETYARSORS.Attack.ResultFormulaMiss";
   const formula = game.i18n.format(key, { attack: a, defense: d, raw: r.raw, modifiers, overflow: r.overflow });
-  // Találat (Súrolás is): találati hely – kidobott eredmény, vagy d4 gomb
-  let location = "";
+  let locationLabel = "";
+  let locationButton = "";
   if (r.hit && target) {
     const root = rootOf(attackMsg);
     const hit = findHitLocation(root.id, target.key);
     if (hit) {
-      location = `<span class="hit-location"><i class="fa-solid fa-location-dot"></i> ${esc(flagsOf(hit).hitLocation.label)}</span>`;
-    } else if (canRollHitLocation(root, target)) {
-      location = `<button type="button" class="betyarsors-hit-location" data-attack-id="${esc(root.id)}"
+      locationLabel = `<span class="hit-location"><i class="fa-solid fa-location-dot"></i> ${esc(flagsOf(hit).hitLocation.label)}</span>`;
+    } else if (showHitLocationButton && canRollHitLocation(root, target)) {
+      locationButton = `<button type="button" class="betyarsors-hit-location" data-attack-id="${esc(root.id)}"
         data-target-key="${esc(target.key)}" data-target-name="${esc(target.name)}"
         data-tooltip="${esc(L("BETYARSORS.HitLocation.Button"))}" aria-label="${esc(L("BETYARSORS.HitLocation.Button"))}">
         <i class="fa-solid fa-person-burst" inert></i></button>`;
     }
   }
-  const isButton = location.startsWith("<button");
   return `<div class="betyarsors-overflow ${r.key}">
     <span class="overflow-calc">${esc(formula)}</span>
-    ${isButton ? location : ""}
+    ${locationButton}
     <strong class="overflow-label">${esc(r.label)}</strong>
-    ${isButton ? "" : location}
+    ${locationLabel}
   </div>`;
 }
 
@@ -256,7 +255,8 @@ export function decorateCombatMessage(message, html, superseded) {
       row.innerHTML = `<img src="${esc(target.img)}" alt="" /><span class="target-name">${esc(target.name)}</span>`;
       const defenseMsg = findDefense(root.id, target.key);
       if (defenseMsg) {
-        row.insertAdjacentHTML("beforeend", resultLine(message, defenseMsg, target) || `<em>${esc(L("BETYARSORS.Attack.Defended"))}</em>`);
+        const result = resultLine(message, defenseMsg, target, { showHitLocationButton: true });
+        row.insertAdjacentHTML("beforeend", result || `<em>${esc(L("BETYARSORS.Attack.Defended"))}</em>`);
       } else if (defenderOf(target)?.isOwner) {
         const btn = document.createElement("button");
         btn.type = "button";
@@ -288,7 +288,6 @@ export function decorateCombatMessage(message, html, superseded) {
     if (attackMsg) {
       const target = flagsOf(attackMsg).attack?.targets?.find((t) => t.key === flags.defense.targetKey) ?? null;
       box.insertAdjacentHTML("beforeend", resultLine(attackMsg, rootOf(message), target));
-      bindHitLocationButtons(box);
     }
     content.append(box);
   }
