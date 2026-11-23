@@ -112,35 +112,31 @@
   {{!-- ============ LÓ ============ --}}
   <section class="card horse">
     <h3 class="card-title"><i class="fa-solid fa-horse-head" aria-hidden="true"></i> {{localize "BETYARSORS.Label.Horse"}}</h3>
-    <div class="horse-layout">
-      <div class="horse-fields">
-        <label class="field">
-          <span>{{localize "BETYARSORS.Label.HorseName"}}</span>
-          <input type="text" name="system.horse.name" value="{{system.horse.name}}" />
-        </label>
-        <label class="field">
-          <span>{{localize "BETYARSORS.Label.HorseBreed"}}</span>
-          <input type="text" name="system.horse.breed" value="{{system.horse.breed}}" />
-        </label>
-        <label class="field horse-bonuses">
-          <span>{{localize "BETYARSORS.Label.HorseBonuses"}}</span>
-          <textarea name="system.horse.bonuses" rows="2">{{system.horse.bonuses}}</textarea>
-        </label>
-      </div>
-      <div class="horse-state">
-        <label class="field">
-          <span>{{localize "BETYARSORS.Label.HorseHealth"}}</span>
-          <select name="system.horse.health" data-dtype="Number">
-            {{#each horseHealth}}<option value="{{value}}" {{#if isChecked}}selected{{/if}}>{{label}}</option>{{/each}}
-          </select>
-        </label>
-        <label class="field">
-          <span>{{localize "BETYARSORS.Label.HorseExhaustion"}}</span>
-          <select name="system.horse.exhaustion" data-dtype="Number">
-            {{#each horseExhaustion}}<option value="{{value}}" {{#if isChecked}}selected{{/if}}>{{label}}</option>{{/each}}
-          </select>
-        </label>
-      </div>
+    <div class="horse-fields">
+      <label class="field">
+        <span>{{localize "BETYARSORS.Label.HorseName"}}</span>
+        <input type="text" name="system.horse.name" value="{{system.horse.name}}" />
+      </label>
+      <label class="field">
+        <span>{{localize "BETYARSORS.Label.HorseBreed"}}</span>
+        <input type="text" name="system.horse.breed" value="{{system.horse.breed}}" />
+      </label>
+      <label class="field wide">
+        <span>{{localize "BETYARSORS.Label.HorseBonuses"}}</span>
+        {{#if multilineHorseBonuses}}
+        <textarea name="system.horse.bonuses" rows="1">{{system.horse.bonuses}}</textarea>
+        {{else}}
+        <input type="text" name="system.horse.bonuses" value="{{system.horse.bonuses}}" />
+        {{/if}}
+      </label>
+    </div>
+    <div class="horse-state">
+      <h4>{{localize "BETYARSORS.Label.HorseHealth"}}</h4>
+      {{> "betyarsors.segmented" name="system.horse.health" options=horseHealth}}
+    </div>
+    <div class="horse-state">
+      <h4>{{localize "BETYARSORS.Label.HorseExhaustion"}}</h4>
+      {{> "betyarsors.segmented" name="system.horse.exhaustion" options=horseExhaustion}}
     </div>
   </section>
 

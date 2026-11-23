@@ -33,6 +33,7 @@ export class BetyarsorsKarakterSheet extends BetyarsorsCreatureSheet {
     const cfg = BETYARSORS;
 
     context.fatePointsMax = cfg.fatePointsMax;
+    context.multilineHorseBonuses = /[\r\n]/.test(sys.horse.bonuses);
     context.horseHealth = cfg.horseHealth.map((label, value) => ({ value, label: L(label), isChecked: value === sys.horse.health }));
     context.horseExhaustion = cfg.horseExhaustion.map((label, value) => ({
       value,
