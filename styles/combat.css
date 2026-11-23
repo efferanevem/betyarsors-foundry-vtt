@@ -14,7 +14,7 @@
   display: none !important;
 }
 
-/* A core "aktív kör" kiemelése nem jelent semmit – a Tekintet a kiemelés. */
+/* A harckövetőben a Tekintet birtokosának sorát emeljük ki. */
 .combat-tracker li.combatant.active:not(.betyarsors-has-tekintet) {
   background: none;
   border-color: transparent;

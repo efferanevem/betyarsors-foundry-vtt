@@ -8,6 +8,7 @@ import { getDoom, setDoom } from "../apps/doom-tracker.mjs";
  *
  * Tárolás: Combat flag `betyarsors.tekintet` (combatant id) és `betyarsors.tekintetPrev` (az előző birtokos –
  * a könyv szerint célszerű, hogy ne kapja vissza azonnal; ezt csak jelöljük, nem tiltjuk).
+ * Átadáskor a Foundry aktív harcolója is a Tekintet birtokosára vált.
  * Játékos nem írhatja a Combat dokumentumot, ezért az ő kérését socketen az aktív Mesélő hajtja végre.
  */
 
@@ -15,6 +16,10 @@ const SOCKET = `system.${SYSTEM_ID}`;
 
 export function getTekintet(combat) {
   return combat?.getFlag(SYSTEM_ID, "tekintet") ?? null;
+}
+
+function turnIndexOf(combat, combatantId) {
+  return combat.turns.findIndex((combatant) => combatant.id === combatantId);
 }
 
 /** Játékoskarakter-e a szereplő (Tekintet-elragadáshoz). */
@@ -33,18 +38,22 @@ function isPlayerSide(combatant) {
  */
 export async function setTekintet(combat, combatantId, { seize = false, by = null } = {}) {
   if (!combat || !game.user.isGM) return;
-  const combatant = combat.combatants.get(combatantId);
-  if (!combatant) return;
+  const turn = turnIndexOf(combat, combatantId);
+  if (turn < 0) return;
+  const combatant = combat.turns[turn];
   const current = getTekintet(combat);
-  if (current === combatantId) return;
+  if (current === combatantId) {
+    if (combat.turn !== turn) await combat.update({ turn });
+    return;
+  }
 
   if (seize) {
     if (getDoom() < 1) return ui.notifications.warn(game.i18n.localize("BETYARSORS.Tekintet.NoDoom"));
     await setDoom(getDoom() - 1);
   }
   await combat.update({
-    [`flags.${SYSTEM_ID}.tekintet`]: combatantId,
-    [`flags.${SYSTEM_ID}.tekintetPrev`]: current
+    turn,
+    flags: { [SYSTEM_ID]: { tekintet: combatantId, tekintetPrev: current } }
   });
 
   const key = seize ? "BETYARSORS.Tekintet.ChatSeized" : "BETYARSORS.Tekintet.ChatPassed";
@@ -59,6 +68,7 @@ export async function setTekintet(combat, combatantId, { seize = false, by = nul
 
 /** Kérés a felhasználótól: Mesélő közvetlenül, játékos socketen át. */
 async function requestTekintet(combat, combatantId) {
+  if (!combat || (getTekintet(combat) === combatantId && combat.combatant?.id === combatantId)) return;
   if (game.user.isGM) {
     // Mesélő: ha a Tekintet egy játékosnál van, és NJK-nak adja → átadás vagy elragadás 1 Végzetért?
     const holder = combat.combatants.get(getTekintet(combat));
@@ -97,7 +107,24 @@ export function registerTekintet() {
     setTekintet(combat, data.combatantId, { by: data.by });
   });
 
+  // Az előre kiosztott Tekintet birtokosa kezdjen a Foundry harcában is.
+  Hooks.on("combatStart", (combat, update) => {
+    const turn = turnIndexOf(combat, getTekintet(combat));
+    if (turn >= 0) update.turn = turn;
+  });
+  Hooks.on("updateCombat", selectTekintetToken);
   Hooks.on("renderCombatTracker", (app, html) => decorateTracker(app, html));
+}
+
+/** Az átadást minden kliens a saját térképén és tokenjogosultságaival követi. */
+function selectTekintetToken(combat, changes) {
+  if (!globalThis.canvas?.ready || !combat.isActive) return;
+  const holderId = changes.flags?.[SYSTEM_ID]?.tekintet ?? ("turn" in changes ? combat.combatant?.id : null);
+  if (!holderId || holderId !== getTekintet(combat)) return;
+  const tokenDoc = combat.combatants.get(holderId)?.token;
+  if (!tokenDoc || tokenDoc.parent !== canvas.scene) return;
+  const token = tokenDoc.object;
+  if (token?.isVisible && token.isOwner && token.can(game.user, "control")) token.control();
 }
 
 /** Harckövető: 👁 gomb soronként, Tekintet kiemelés, fejlécben a birtokos neve. */
@@ -114,20 +141,23 @@ function decorateTracker(app, html) {
     const has = id === holderId;
     row.classList.toggle("betyarsors-has-tekintet", has);
     row.classList.toggle("betyarsors-tekintet-prev", id === prevId && !has);
-    if (row.querySelector(".betyarsors-tekintet-btn")) continue;
     // Kerek "érme" a sor jobb szélén (a régi kezdeményezés helyén) – birtokosnál teli arany, izzó.
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = `betyarsors-tekintet-btn ${has ? "active" : ""}`;
-    btn.innerHTML = `<i class="fa-solid fa-eye" inert></i>`;
+    let btn = row.querySelector(".betyarsors-tekintet-btn");
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "betyarsors-tekintet-btn";
+      btn.innerHTML = `<i class="fa-solid fa-eye" inert></i>`;
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        requestTekintet(app.viewed ?? game.combat, row.dataset.combatantId);
+      });
+      row.append(btn);
+    }
+    btn.classList.toggle("active", has);
     btn.dataset.tooltip = L(has ? "BETYARSORS.Tekintet.HasIt" : id === prevId ? "BETYARSORS.Tekintet.WasPrev" : "BETYARSORS.Tekintet.Give");
     btn.setAttribute("aria-label", btn.dataset.tooltip);
-    btn.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation(); // ne fusson a sor saját akciója (aktiválás / pásztázás)
-      if (!has) requestTekintet(combat, id);
-    });
-    row.append(btn);
   }
 
   // Fejléc: kör helyett a Tekintet birtokosa
