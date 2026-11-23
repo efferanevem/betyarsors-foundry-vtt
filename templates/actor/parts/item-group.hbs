@@ -23,6 +23,7 @@
           <div class="item-row">{{> "betyarsors.equipment-row"}}</div>
         </summary>
         <div class="equipment-description">
+          <div><em>{{localize "BETYARSORS.Label.Visibility"}}: {{item.system.visibility}}</em></div>
           {{#if description}}{{{description}}}{{else}}<em class="empty">{{localize "BETYARSORS.Label.NoDescription"}}</em>{{/if}}
         </div>
       </details>
