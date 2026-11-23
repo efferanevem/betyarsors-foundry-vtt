@@ -298,11 +298,13 @@
 .betyarsors .injury-recovery small { grid-column: 1 / -1; overflow-wrap: anywhere; color: var(--b-ink-soft); }
 
 /* ---------- Ló ---------- */
-.betyarsors .creature-sheet .horse { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }
+.betyarsors .creature-sheet .horse { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem 1rem; }
 .betyarsors .creature-sheet .horse .card-title { grid-column: 1 / -1; margin-bottom: 0; }
-.betyarsors .creature-sheet .horse-fields { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+.betyarsors .creature-sheet .horse-fields { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; row-gap: 0.6rem; }
 .betyarsors .creature-sheet .horse-fields .wide { grid-column: 1 / -1; }
 .betyarsors .horse-fields textarea { height: var(--input-height); min-height: var(--input-height); resize: vertical; font: inherit; }
+.betyarsors .horse-state .segmented { display: flex; }
+.betyarsors .horse-state .segment { display: grid; flex: 1 1 auto; }
 
 /* ---------- Jegyzetek ---------- */
 .betyarsors .creature-sheet .notes prose-mirror { min-height: 140px; }
