@@ -155,8 +155,7 @@ export class BetyarsorsCreatureSheet extends BetyarsorsActorSheet {
           { cls: "overflow", label: `${L("BETYARSORS.Weapon.Overflow")} ${signed(Number(s.overflow) || 0)}` },
           { cls: "hands", label: L(cfg.weaponHands[s.hands] ?? "") },
           { cls: "range", label: L(cfg.weaponRanges[s.range] ?? "") },
-          { cls: `mounted mounted-${s.mounted}`, label: `${L("BETYARSORS.Weapon.Mounted.Short")}: ${L(cfg.weaponMounted[s.mounted] ?? "")}` },
-          { cls: "visibility", label: `${L("BETYARSORS.Label.Visibility")} ${s.visibility}` }
+          { cls: `mounted mounted-${s.mounted}`, label: `${L("BETYARSORS.Weapon.Mounted.Short")}: ${L(cfg.weaponMounted[s.mounted] ?? "")}` }
         ].filter((t) => t && t.label);
         return {
           item,
@@ -168,17 +167,13 @@ export class BetyarsorsCreatureSheet extends BetyarsorsActorSheet {
     context.clothes = byType("Ruha").map((item) => ({ item }));
     const gearSkills = Object.entries({ ...cfg.skills, ...cfg.combatSkills });
     context.gear = await Promise.all(byType("Targy").map(async (item) => {
-      const { quantity, visibility, skillGearDice = {} } = item.system;
+      const { quantity, skillGearDice = {} } = item.system;
       const skillTags = gearSkills
         .filter(([key]) => skillGearDice[key] > 0)
         .map(([key, skill]) => ({ cls: "gear", label: `${L(skill.label)} +${skillGearDice[key]}d6` }));
       return {
         item,
-        tags: [
-          { cls: "quantity", label: `× ${quantity}` },
-          { cls: "visibility", label: `${L("BETYARSORS.Label.Visibility")} ${visibility}` },
-          ...skillTags
-        ],
+        tags: [{ cls: "quantity", label: `× ${quantity}` }, ...skillTags],
         description: await enrichItemDescription(item)
       };
     }));
