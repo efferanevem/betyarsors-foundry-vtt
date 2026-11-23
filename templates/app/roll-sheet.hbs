@@ -1,4 +1,13 @@
 <section class="roll-sheet-body">
+  {{#*inline "betyarsors.roll-item"}}
+  <label class="gear-item">
+    <input type="checkbox" name="{{inputName}}" value="{{id}}" {{checked checked}} />
+    <span class="toggle-box" aria-hidden="true"></span>
+    <img src="{{img}}" alt="" />
+    <span class="gear-item-name">{{name}}{{#if condition}}<small class="clothing-condition">{{condition}}</small>{{/if}}</span>
+    <span class="gear-item-dice">{{#if dice}}+{{dice}}d6{{else}}{{signedOverflow}}{{/if}}</span>
+  </label>
+  {{/inline}}
   <header class="roll-sheet-header">
     <h3>{{label}}</h3>
     <p class="roll-sheet-meta">
@@ -41,15 +50,7 @@
     {{!-- Felszereléskockát adó tárgyak ehhez a jártassághoz – bepipálva hozzáadódnak (max 3d6) --}}
     <ul class="gear-items">
       {{#each gearItems}}
-      <li>
-        <label class="gear-item">
-          <input type="checkbox" name="gearItem" value="{{id}}" {{checked checked}} hidden />
-          <span class="toggle-box"></span>
-          <img src="{{img}}" alt="" />
-          <span class="gear-item-name">{{name}}</span>
-          <span class="gear-item-dice">+{{dice}}d6</span>
-        </label>
-      </li>
+      <li>{{> "betyarsors.roll-item" inputName="gearItem"}}</li>
       {{/each}}
       <li class="gear-cap-note" hidden>{{localize "BETYARSORS.RollSheet.GearCap"}}</li>
     </ul>
@@ -57,6 +58,15 @@
 
     <span class="roll-sheet-label">{{localize "BETYARSORS.RollSheet.Modifier"}}</span>
     <input class="roll-sheet-modifier" type="number" name="modifier" value="0" step="1" />
+
+    {{#if defenseClothing.length}}
+    <fieldset class="gear-items">
+      <legend class="roll-sheet-label">{{localize "BETYARSORS.Clothing.DefenseModifiers"}}</legend>
+      {{#each defenseClothing}}
+      {{> "betyarsors.roll-item" inputName="clothingModifier"}}
+      {{/each}}
+    </fieldset>
+    {{/if}}
 
     {{#if attackTargets}}
     {{!-- Túlütés módosító: NEM adódik a dobáshoz – csak találat esetén a Túlütéshez (fegyver, helyzet) --}}

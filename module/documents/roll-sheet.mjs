@@ -77,6 +77,11 @@ export class BetyarsorsRollSheet extends HandlebarsApplicationMixin(ApplicationV
     return `${game.i18n.localize("BETYARSORS.RollSheet.Title")}: ${this.label}`;
   }
 
+  #defenseClothing() {
+    return this.actor.items.filter((item) => item.type === "Ruha" && Number(item.system.overflow))
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+  }
+
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
     const attrLabel = game.i18n.localize(BETYARSORS.attributes[this.attributeKey]?.label ?? "");
@@ -115,6 +120,11 @@ export class BetyarsorsRollSheet extends HandlebarsApplicationMixin(ApplicationV
       gearDice,
       gearValue: this.initialGearDice,
       gearItems: this.gearItems,
+      defenseClothing: this.defense ? this.#defenseClothing().map(({ id, name, img, system }) => ({
+        id, name, img,
+        condition: system.overflowCondition,
+        signedOverflow: system.overflow > 0 ? `+${system.overflow}` : system.overflow
+      })) : [],
       overflowModInitial: this.initialOverflowMod,
       gearMax: BETYARSORS.gearDiceMax,
       formula: this.#formula({ advantage: initialMode, gearDice: this.#totalGear(this.initialGearDice, this.gearItems) }),
@@ -157,19 +167,21 @@ export class BetyarsorsRollSheet extends HandlebarsApplicationMixin(ApplicationV
     });
   }
 
+  #checkedIds(name) {
+    return new Set(Array.from(this.element.querySelectorAll(`[name="${name}"]:checked`), (input) => input.value));
+  }
+
   #readForm() {
     const num = (selector) => Number(this.element.querySelector(selector)?.value) || 0;
     const manual = num("[name='gearDice']");
-    const checkedIds = new Set(
-      Array.from(this.element.querySelectorAll("[name='gearItem']:checked")).map((el) => el.value)
-    );
-    const items = this.gearItems.map((g) => ({ ...g, checked: checkedIds.has(g.id) }));
-    const raw = manual + items.filter((g) => g.checked).reduce((s, g) => s + g.dice, 0);
+    const checkedIds = this.#checkedIds("gearItem");
+    const usedItems = this.gearItems.filter((item) => checkedIds.has(item.id));
+    const raw = manual + usedItems.reduce((sum, item) => sum + item.dice, 0);
     return {
       advantage: Math.sign(num("[name='advantage']:checked")),
       gearDice: Math.min(BETYARSORS.gearDiceMax, raw),
       gearCapped: raw > BETYARSORS.gearDiceMax,
-      usedItems: items.filter((g) => g.checked),
+      usedItems,
       modifier: num("[name='modifier']")
     };
   }
@@ -210,10 +222,20 @@ export class BetyarsorsRollSheet extends HandlebarsApplicationMixin(ApplicationV
       .join("");
   }
 
+  #combatFlags() {
+    if (this.defense) {
+      const checkedIds = this.#checkedIds("clothingModifier");
+      const clothingModifiers = this.#defenseClothing().filter((item) => checkedIds.has(item.id))
+        .map((item) => ({ name: item.name, value: Number(item.system.overflow) }));
+      return { defense: { ...this.defense, clothingModifiers } };
+    }
+    if (!this.targets.length) return {};
+    const overflowMod = Number(this.element.querySelector("[name='overflowMod']")?.value) || 0;
+    return { attack: captureAttack(this.targets, overflowMod) };
+  }
+
   static async #onSubmit() {
     const { advantage, gearDice, modifier, usedItems } = this.#readForm();
-    // Túlütés módosító (csak támadásnál): nem része a dobásnak, a Túlütéshez adódik találat esetén.
-    const overflowMod = Number(this.element.querySelector("[name='overflowMod']")?.value) || 0;
     const L = (k) => game.i18n.localize(k);
     const notes = [
       ...this.circumstances.advantages.map((x) => `${L("BETYARSORS.Roll.Advantage")}: ${x}`),
@@ -229,7 +251,7 @@ export class BetyarsorsRollSheet extends HandlebarsApplicationMixin(ApplicationV
       gearDice,
       modifier,
       notes,
-      extraFlags: this.defense ? { defense: this.defense } : this.targets.length ? { attack: captureAttack(this.targets, overflowMod) } : {}
+      extraFlags: this.#combatFlags()
     });
   }
 }

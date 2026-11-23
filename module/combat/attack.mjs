@@ -8,7 +8,8 @@ import { SYSTEM_ID, BETYARSORS } from "../config.mjs";
  *   fegyverrel (a fegyver Harci Jártasságával és Felszereléskockáival), Dulakodással vagy Lovaglással.
  * - A védekezés próbája flag `defense: { attackId, targetKey }` – a támadás GYÖKÉR üzenetére hivatkozik.
  * - A támadás és a védekezés végső eredményének különbsége dönti el a találatot. A negatív különbség mellémegy.
- *   Találatkor a különbséghez hozzáadódik a támadás Túlütés módosítója és Beteg célpont ellen további +1.
+ *   Találatkor a különbséghez hozzáadódnak a támadás és a védekezéshez kiválasztott ruhák módosítói,
+ *   valamint Beteg célpont ellen további +1.
  *   0–1 Súrolás, 2–4 Seb, 5–7 Súlyos seb, 8+ Halálos seb (CONFIG.BETYARSORS.overflowLevels).
  *   Az eredmény a támadás és a védekezés kártyáján is megjelenik, és frissül, ha bármelyiket újradobják.
  *
@@ -132,10 +133,13 @@ function resultLine(attackMsg, defenseMsg, target = null) {
   if (!Number.isFinite(a) || !Number.isFinite(d)) return "";
   const attackMod = Number(flagsOf(attackMsg).attack?.overflowMod) || 0;
   const sickBonus = target?.wasSick ? 1 : 0;
-  const r = overflowResult(a, d, attackMod + sickBonus);
+  const clothing = flagsOf(defenseMsg).defense?.clothingModifiers ?? [];
+  const clothingMod = clothing.reduce((sum, item) => sum + item.value, 0);
+  const r = overflowResult(a, d, attackMod + sickBonus + clothingMod);
   const modifiers = [
     attackMod ? `${attackMod > 0 ? "+" : ""}${attackMod} ${L("BETYARSORS.RollSheet.ModifierShort")}` : "",
-    sickBonus ? `+${sickBonus} (${L("BETYARSORS.Status.beteg")})` : ""
+    sickBonus ? `+${sickBonus} (${L("BETYARSORS.Status.beteg")})` : "",
+    ...clothing.map(({ name, value }) => `${value > 0 ? "+" : ""}${value} (${name})`)
   ].filter(Boolean).join(", ");
   const key = r.hit && modifiers ? "BETYARSORS.Attack.ResultFormulaMod" : r.hit ? "BETYARSORS.Attack.ResultFormula" : "BETYARSORS.Attack.ResultFormulaMiss";
   const formula = game.i18n.format(key, { attack: a, defense: d, raw: r.raw, modifiers, overflow: r.overflow });
