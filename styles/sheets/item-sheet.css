@@ -17,6 +17,10 @@
   font-weight: 700;
 }
 .betyarsors .item-sheet .item-properties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+.betyarsors .item-sheet .item-properties:has(.item-gear-add) {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 4fr);
+  align-items: center;
+}
 .betyarsors .item-sheet .item-properties:empty { display: none; }
 .betyarsors .item-sheet .description prose-mirror { min-height: 200px; }
 .betyarsors .item-sheet .item-gear { display: grid; gap: 0.4rem; }

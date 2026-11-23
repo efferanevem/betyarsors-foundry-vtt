@@ -106,26 +106,10 @@
       <input type="number" name="system.visibility" value="{{system.visibility}}" step="1" />
     </label>
     {{/if}}
-  </section>
-  {{/if}}
-
-  {{#if isTargy}}
-  <section class="card item-gear">
-    <h3 class="card-title">{{localize "BETYARSORS.Roll.GearDice"}}</h3>
-    {{#each gearSkillRows}}
-    <label class="item-gear-row">
-      <span>{{label}}</span>
-      <select name="system.skillGearDice.{{key}}" {{#unless @root.editable}}disabled{{/unless}}>
-        {{#each options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
-      </select>
-    </label>
-    {{else}}
-    <p class="empty">{{localize "BETYARSORS.RollSheet.GearReset"}}</p>
-    {{/each}}
     {{#if editable}}
     {{#if availableGearSkills.length}}
     <details class="item-gear-add">
-      <summary>{{localize "BETYARSORS.Label.Add"}}</summary>
+      <summary>{{localize "BETYARSORS.Label.AddGearDice"}}</summary>
       <div class="item-gear-row item-gear-picker">
         <select data-gear-skill-picker aria-label="{{localize 'BETYARSORS.Label.Skills'}}">
           <option value="" selected disabled>{{localize "BETYARSORS.Label.ChooseSkill"}}</option>
@@ -139,6 +123,20 @@
     </details>
     {{/if}}
     {{/if}}
+  </section>
+  {{/if}}
+
+  {{#if gearSkillRows.length}}
+  <section class="card item-gear">
+    <h3 class="card-title">{{localize "BETYARSORS.Roll.GearDice"}}</h3>
+    {{#each gearSkillRows}}
+    <label class="item-gear-row">
+      <span>{{label}}</span>
+      <select name="system.skillGearDice.{{key}}" {{#unless @root.editable}}disabled{{/unless}}>
+        {{#each options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </label>
+    {{/each}}
   </section>
   {{/if}}
 
