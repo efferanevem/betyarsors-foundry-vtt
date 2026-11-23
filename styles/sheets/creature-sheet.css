@@ -289,6 +289,11 @@
 .betyarsors .injury-mode { position: relative; cursor: pointer; }
 .betyarsors .injury-mode input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
 .betyarsors .injury-mode:focus-within { outline: 1px solid var(--b-red); }
+.betyarsors .injury-recovery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 0.25rem; }
+.betyarsors .injury-recovery > :is(input, select) { min-width: 0; }
+.betyarsors .injury-recovery input[type="number"] { appearance: auto; }
+.betyarsors .injury-recovery input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: auto; opacity: 1; }
+.betyarsors .injury-recovery small { grid-column: 1 / -1; overflow-wrap: anywhere; color: var(--b-ink-soft); }
 
 /* ---------- Ló ---------- */
 .betyarsors .creature-sheet .horse { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }

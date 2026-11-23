@@ -40,6 +40,7 @@ export class BetyarsorsKarakterSheet extends BetyarsorsCreatureSheet {
     }));
     context.hitLocations = cfg.hitLocations;
     context.woundTypes = cfg.wounds;
+    context.recoveryUnits = cfg.recoveryUnits;
     context.injuries = sys.injuries.map((inj, index) => ({ ...inj, index }));
     return context;
   }
@@ -57,6 +58,9 @@ export class BetyarsorsKarakterSheet extends BetyarsorsCreatureSheet {
           if (injury.useCustomLocation) injury.location ||= selected;
           else if (injury.location === selected) injury.location = "";
         }
+        const amountInput = form.elements.namedItem(`system.injuries.${index}.recoveryAmount`);
+        if (amountInput?.value === "") injury.recoveryAmount = null;
+        else if (injury.recoveryAmount != null) injury.recovery = "";
         return injury;
       });
     }

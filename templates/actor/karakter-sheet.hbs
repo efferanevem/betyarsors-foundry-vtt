@@ -83,7 +83,14 @@
           {{/if}}
         </div>
         <input type="text" name="system.injuries.{{index}}.effect" value="{{effect}}" />
-        <input type="text" name="system.injuries.{{index}}.recovery" value="{{recovery}}" />
+        <div class="injury-recovery">
+          <input type="number" name="system.injuries.{{index}}.recoveryAmount" value="{{recoveryAmount}}" min="0" step="1"
+                 aria-label="{{localize 'BETYARSORS.Label.InjuryRecovery'}}" />
+          <select name="system.injuries.{{index}}.recoveryUnit" aria-label="{{localize 'BETYARSORS.Label.InjuryRecoveryUnit'}}">
+            {{selectOptions @root.recoveryUnits selected=recoveryUnit localize=true}}
+          </select>
+          {{#if recovery}}<small>{{recovery}}</small>{{/if}}
+        </div>
         <span class="item-controls">
           {{#if @root.editable}}<a data-action="injuryDelete" data-tooltip="BETYARSORS.Label.Delete"><i class="fa-solid fa-trash"></i></a>{{/if}}
         </span>

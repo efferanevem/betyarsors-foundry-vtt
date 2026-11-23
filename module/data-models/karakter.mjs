@@ -33,7 +33,9 @@ export class KarakterDataModel extends CreatureDataModel {
           useCustomLocation: new BooleanField({ initial: false }),
           location: text(), // A hely és a fajta szabad szöveggel
           effect: text(), // Hatás
-          recovery: text() // Felépülési idő
+          recoveryAmount: int({ min: 0, nullable: true, initial: null }),
+          recoveryUnit: new StringField({ required: true, blank: false, initial: "nap", choices: Object.keys(BETYARSORS.recoveryUnits) }),
+          recovery: text() // A számmá nem alakítható korábbi bejegyzés
         }),
         { initial: [] }
       ),
@@ -52,6 +54,14 @@ export class KarakterDataModel extends CreatureDataModel {
     if (Array.isArray(source.injuries)) {
       for (const injury of source.injuries) {
         if (injury?.location && injury.useCustomLocation === undefined) injury.useCustomLocation = true;
+        if (typeof injury?.recovery !== "string" || injury.recoveryAmount != null) continue;
+        const duration = /^(\d+)\s*(nap|hét)?$/iu.exec(injury.recovery.trim());
+        if (!duration) continue;
+        const amount = Number(duration[1]);
+        if (!Number.isSafeInteger(amount)) continue;
+        injury.recoveryAmount = amount;
+        injury.recoveryUnit = duration[2]?.toLowerCase() === "hét" ? "het" : "nap";
+        injury.recovery = "";
       }
     }
     return super.migrateData(source);

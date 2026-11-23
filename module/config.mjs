@@ -85,6 +85,11 @@ export const BETYARSORS = {
   /** Sebhelyek felső korlátja típusonként. */
   woundMaxLimit: 10,
 
+  recoveryUnits: {
+    nap: "BETYARSORS.RecoveryUnit.Day",
+    het: "BETYARSORS.RecoveryUnit.Week"
+  },
+
   /** NJK Morál típusok (Morál → NJK-k morálja): érték = Morál maximum. */
   npcMorale: {
     1: "BETYARSORS.NpcMorale.1",
