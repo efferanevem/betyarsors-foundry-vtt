@@ -21,6 +21,10 @@
   grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 4fr);
   align-items: center;
 }
+.betyarsors .item-sheet.clothing-sheet .item-properties {
+  grid-template-columns: minmax(7rem, 1fr) minmax(0, 3fr);
+  align-items: end;
+}
 .betyarsors .item-sheet .item-properties:empty { display: none; }
 .betyarsors .item-sheet .description prose-mirror { min-height: 200px; }
 .betyarsors .item-sheet .item-gear { display: grid; gap: 0.4rem; }

@@ -235,6 +235,7 @@
   "BETYARSORS.Overflow.sulyos": "Súlyos seb",
   "BETYARSORS.Overflow.halalos": "Halálos seb",
   "BETYARSORS.Attack.OverflowMod": "Túlütés módosító",
+  "BETYARSORS.Clothing.OverflowCondition": "Milyen esetben?",
   "BETYARSORS.Attack.OverflowModTooltip": "Nem adódik a dobáshoz. Csak ha a támadás talál, akkor a Túlütéshez adódik (pl. fegyver, lovasroham: +1). A találatot nem teheti „nem talált”-tá.",
   "BETYARSORS.Attack.OverflowModTag": "Túlütés {mod}",
   "BETYARSORS.Attack.ResultFormulaMod": "{attack} − {defense} = {raw}, {modifiers} → Túlütés {overflow}",

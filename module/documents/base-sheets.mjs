@@ -141,7 +141,8 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
   }
 
   static async #onAddGearSkill(_event, target) {
-    if (!this.isEditable || this.document.type !== "Targy") return;
+    const diceBySkill = this.document.system.skillGearDice;
+    if (!this.isEditable || !diceBySkill) return;
     const row = target.parentElement;
     const skillPicker = row.querySelector("[data-gear-skill-picker]");
     const skill = skillPicker.value;
@@ -149,7 +150,6 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
       skillPicker.focus();
       return;
     }
-    const diceBySkill = this.document.system.skillGearDice;
     if (!Object.hasOwn(diceBySkill, skill) || diceBySkill[skill] > 0) return;
     const dice = Number(row.querySelector("[data-gear-dice-picker]")?.value);
     if (!Number.isInteger(dice) || dice < 1 || dice > CONFIG.BETYARSORS.gearDiceMax) return;
@@ -176,11 +176,10 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
         label: value === 0 ? zeroLabel : `${value}d6`,
         selected: value === selected
       }));
-    const isTargy = item.type === "Targy";
     const hasVisibility = Object.hasOwn(item.system.schema.fields, "visibility");
-    const gearSkills = isTargy ? localizeMap({ ...cfg.skills, ...cfg.combatSkills })
-      .sort((a, b) => a.label.localeCompare(b.label, "hu")) : [];
     const diceBySkill = item.system.skillGearDice;
+    const gearSkills = diceBySkill ? localizeMap({ ...cfg.skills, ...cfg.combatSkills })
+      .sort((a, b) => a.label.localeCompare(b.label, "hu")) : [];
     return {
       ...context,
       item,
@@ -188,12 +187,13 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
       systemFields: item.system.schema.fields,
       isFegyver: item.type === "Fegyver",
       isFortely: item.type === "Fortely",
-      isTargy,
+      isTargy: item.type === "Targy",
+      isRuha: item.type === "Ruha",
       hasVisibility,
       hasProperties: hasVisibility || item.type === "Fortely",
       editable: this.isEditable,
       availableGearSkills: gearSkills.filter(({ value }) => !diceBySkill[value]),
-      addGearDiceOptions: isTargy ? gearDiceOptions(1).slice(1) : [],
+      addGearDiceOptions: diceBySkill ? gearDiceOptions(1).slice(1) : [],
       gearSkillRows: gearSkills.filter(({ value }) => diceBySkill[value] > 0)
         .map(({ value, label }) => ({
           key: value,

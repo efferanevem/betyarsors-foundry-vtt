@@ -1,4 +1,4 @@
-<section class="betyarsors-sheet item-sheet">
+<section class="betyarsors-sheet item-sheet{{#if isRuha}} clothing-sheet{{/if}}">
   <header class="card item-header">
     <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" data-action="editImage" data-edit="img"
          data-tooltip="BETYARSORS.Label.EditImage" />
@@ -137,6 +137,19 @@
       </select>
     </label>
     {{/each}}
+  </section>
+  {{/if}}
+
+  {{#if isRuha}}
+  <section class="card item-properties">
+    <label class="field">
+      <span>{{localize "BETYARSORS.Attack.OverflowMod"}}</span>
+      <input type="number" name="system.overflow" value="{{system.overflow}}" step="1" {{#unless editable}}disabled{{/unless}} />
+    </label>
+    <label class="field">
+      <span>{{localize "BETYARSORS.Clothing.OverflowCondition"}}</span>
+      <input type="text" name="system.overflowCondition" value="{{system.overflowCondition}}" {{#unless editable}}disabled{{/unless}} />
+    </label>
   </section>
   {{/if}}
 

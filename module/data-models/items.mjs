@@ -1,5 +1,5 @@
 import { BETYARSORS } from "../config.mjs";
-import { BaseItemDataModel, EquipmentItemDataModel } from "./base-item.mjs";
+import { BaseItemDataModel, EquipmentItemDataModel, skillGearDiceField } from "./base-item.mjs";
 
 const { BooleanField, NumberField, StringField } = foundry.data.fields;
 
@@ -41,5 +41,14 @@ export class FegyverDataModel extends EquipmentItemDataModel {
   }
 }
 
-/** Ruha. */
-export class RuhaDataModel extends EquipmentItemDataModel {}
+/** Ruha – jártasságpróbához kockát, védekezéskor feltételes Túlütés-módosítót adhat. */
+export class RuhaDataModel extends EquipmentItemDataModel {
+  static defineSchema() {
+    return {
+      ...super.defineSchema(),
+      skillGearDice: skillGearDiceField(),
+      overflow: new NumberField({ required: true, nullable: false, integer: true, initial: 0 }),
+      overflowCondition: new StringField({ required: false, blank: true, initial: "" })
+    };
+  }
+}
