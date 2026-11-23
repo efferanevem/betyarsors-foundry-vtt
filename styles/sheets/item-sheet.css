@@ -17,30 +17,104 @@
   font-weight: 700;
 }
 .betyarsors .item-sheet .item-properties { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
-.betyarsors .item-sheet .item-properties:has(.item-gear-add) {
-  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 4fr);
-  align-items: center;
-}
 .betyarsors .item-sheet.clothing-sheet .item-properties {
   grid-template-columns: minmax(7rem, 1fr) minmax(0, 3fr);
   align-items: end;
 }
 .betyarsors .item-sheet .item-properties:empty { display: none; }
 .betyarsors .item-sheet .description prose-mirror { min-height: 200px; }
-.betyarsors .item-sheet .item-gear { display: grid; gap: 0.4rem; }
-.betyarsors .item-sheet .item-gear-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 8rem;
-  gap: 0.6rem;
-  align-items: center;
+
+/* Tárgy és ruha: mezők és hozzáadás egy sorban, alattuk a felvett jártasságok. */
+.betyarsors .item-sheet .gear-properties {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
 }
-.betyarsors .item-sheet .item-gear-row select { min-width: 0; }
-.betyarsors .item-sheet .item-gear-add summary { width: fit-content; cursor: pointer; font-weight: 600; }
-.betyarsors .item-sheet .item-gear-add summary:hover { color: var(--b-red); }
-.betyarsors .item-sheet .item-gear-picker {
-  grid-template-columns: minmax(0, 1fr) 4.5rem auto;
-  margin-top: 0.35rem;
+.betyarsors .gear-properties > .field { flex: 0 1 5.5rem; max-width: 25%; }
+.betyarsors :is(.item-gear-add, .gear-dice-choices button, .gear-remove) {
+  border: 1px solid var(--b-frame-light);
+  border-radius: 4px;
+  background: var(--b-parchment-light);
+  color: var(--b-ink);
+  font-family: var(--b-font);
 }
+.betyarsors :is(.item-gear-add, .gear-dice-choices button, .gear-remove):enabled:hover { border-color: var(--b-red); }
+.betyarsors .item-gear-add {
+  margin-inline-start: auto;
+  --button-size: var(--input-height);
+  width: auto;
+  padding-inline: 0.65rem;
+  font-weight: 600;
+}
+.betyarsors .item-gear {
+  flex: 0 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.betyarsors .gear-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  width: auto;
+  min-height: 1.65rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--b-frame-light);
+  border-radius: 4px;
+  background: var(--b-parchment);
+  color: var(--b-ink);
+  font: 600 0.9rem var(--b-font);
+}
+.betyarsors .gear-tag strong { color: var(--b-red); white-space: nowrap; }
+.betyarsors button.gear-tag:hover { border-color: var(--b-red); }
+
+/* A választó a böngésző felső rétegében nyílik, így a görgethető lap sem vágja le. */
+.betyarsors .item-gear-picker {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  box-sizing: border-box;
+  width: min(16rem, calc(100vw - 1rem));
+  height: fit-content;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--b-frame);
+  border-radius: 4px;
+  background: var(--b-parchment-light);
+  color: var(--b-ink);
+  box-shadow: 0 3px 10px rgb(60 40 20 / 24%);
+  font-family: var(--b-font);
+}
+.betyarsors .item-gear-picker:popover-open { display: grid; gap: 0.45rem; }
+@supports (position-area: bottom span-left) {
+  .betyarsors .item-gear-picker {
+    inset: auto;
+    position-area: bottom span-left;
+    justify-self: end;
+    position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
+    margin: 0.25rem 0;
+  }
+}
+.betyarsors .gear-picker-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.betyarsors .gear-picker-head :is(label, strong) { font-weight: 700; color: var(--b-ink-soft); }
+.betyarsors .gear-picker-close {
+  --button-size: 1.5rem;
+  width: var(--button-size);
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+}
+.betyarsors .gear-dice-choices {
+  display: flex;
+  gap: 0.35rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.betyarsors .gear-dice-choices button { flex: 1; font-weight: 700; }
+.betyarsors .gear-dice-choices:disabled button { opacity: 0.5; }
+.betyarsors .gear-dice-choices button[aria-pressed="true"] { color: var(--b-parchment-light); background: var(--b-ink-soft); }
+.betyarsors .item-gear-picker .gear-remove { justify-self: end; width: auto; color: var(--b-red); }
 
 /* Fortély: 1. sor Típus (keskeny) | Melyik? | Előfeltétel pipa; bejelölve 2. sor: pipa + mező */
 .betyarsors .item-sheet .item-properties:has(.fortely-row) { display: flex; flex-direction: column; gap: 0.55rem; }

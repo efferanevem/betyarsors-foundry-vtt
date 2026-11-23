@@ -1,4 +1,35 @@
 <section class="betyarsors-sheet item-sheet{{#if isRuha}} clothing-sheet{{/if}}">
+  {{#*inline "betyarsors.gear-picker"}}
+  <div id="{{pickerId}}" class="item-gear-picker" popover="auto" role="dialog" aria-labelledby="{{pickerId}}-title" data-skill="{{key}}">
+    <div class="gear-picker-head">
+      {{#if key}}
+      <strong id="{{pickerId}}-title">{{label}}</strong>
+      {{else}}
+      <label id="{{pickerId}}-title" for="{{pickerId}}-skill">{{localize "BETYARSORS.Roll.SkillDice"}}</label>
+      {{/if}}
+      <button type="button" class="gear-picker-close" popovertarget="{{pickerId}}" popovertargetaction="hide"
+              aria-label="{{localize 'BETYARSORS.Label.Close'}}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </div>
+    {{#unless key}}
+    <select id="{{pickerId}}-skill" data-gear-skill-picker autofocus>
+      <option value="" selected disabled>{{localize "BETYARSORS.Label.ChooseSkill"}}</option>
+      {{#each @root.availableGearSkills}}<option value="{{value}}">{{label}}</option>{{/each}}
+    </select>
+    {{/unless}}
+    <fieldset class="gear-dice-choices" aria-label="{{localize 'BETYARSORS.Roll.GearDice'}}" {{#unless key}}disabled{{/unless}}>
+      {{#each options}}
+      <button type="button" data-action="setGearDice" data-dice="{{value}}"
+              {{#if ../key}}aria-pressed="{{selected}}" {{#if selected}}autofocus{{/if}}{{/if}}>{{label}}</button>
+      {{/each}}
+    </fieldset>
+    {{#if key}}
+    <button type="button" class="gear-remove" data-action="setGearDice" data-dice="0">
+      <i class="fa-solid fa-trash" aria-hidden="true"></i> {{localize "BETYARSORS.Label.Remove"}}
+    </button>
+    {{/if}}
+  </div>
+  {{/inline}}
+
   <header class="card item-header">
     <img class="profile-img" src="{{item.img}}" alt="{{item.name}}" data-action="editImage" data-edit="img"
          data-tooltip="BETYARSORS.Label.EditImage" />
@@ -9,7 +40,7 @@
   </header>
 
   {{#if hasProperties}}
-  <section class="card item-properties">
+  <section class="card item-properties{{#if hasSkillGearDice}} gear-properties{{/if}}">
     {{#if isFegyver}}
     <div class="field weapon-skill">
       <span>{{localize "BETYARSORS.Label.CombatSkill"}}</span>
@@ -108,35 +139,27 @@
     {{/if}}
     {{#if editable}}
     {{#if availableGearSkills.length}}
-    <details class="item-gear-add">
-      <summary>{{localize "BETYARSORS.Label.AddGearDice"}}</summary>
-      <div class="item-gear-row item-gear-picker">
-        <select data-gear-skill-picker aria-label="{{localize 'BETYARSORS.Label.Skills'}}">
-          <option value="" selected disabled>{{localize "BETYARSORS.Label.ChooseSkill"}}</option>
-          {{#each availableGearSkills}}<option value="{{value}}">{{label}}</option>{{/each}}
-        </select>
-        <select data-gear-dice-picker aria-label="{{localize 'BETYARSORS.Roll.GearDice'}}">
-          {{#each addGearDiceOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
-        </select>
-        <button type="button" data-action="addGearSkill">{{localize "BETYARSORS.Label.Save"}}</button>
-      </div>
-    </details>
+    <button type="button" class="item-gear-add" popovertarget="{{gearAddId}}" aria-haspopup="dialog"
+            aria-label="{{localize 'BETYARSORS.Label.AddGearDice'}}" data-tooltip="BETYARSORS.Label.AddGearDice">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i> {{localize "BETYARSORS.Label.Die"}}
+    </button>
+    {{> "betyarsors.gear-picker" pickerId=gearAddId options=addGearDiceOptions}}
     {{/if}}
     {{/if}}
-  </section>
-  {{/if}}
-
-  {{#if gearSkillRows.length}}
-  <section class="card item-gear">
-    <h3 class="card-title">{{localize "BETYARSORS.Roll.GearDice"}}</h3>
-    {{#each gearSkillRows}}
-    <label class="item-gear-row">
-      <span>{{label}}</span>
-      <select name="system.skillGearDice.{{key}}" {{#unless @root.editable}}disabled{{/unless}}>
-        {{#each options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
-      </select>
-    </label>
-    {{/each}}
+    {{#if gearSkillRows.length}}
+    <div class="item-gear" role="group" aria-label="{{localize 'BETYARSORS.Roll.GearDice'}}">
+      {{#each gearSkillRows}}
+      {{#if @root.editable}}
+      <button type="button" class="gear-tag" popovertarget="{{pickerId}}" aria-haspopup="dialog" data-tooltip="BETYARSORS.Label.Edit">
+        {{label}} <strong>+{{dice}}d6</strong>
+      </button>
+      {{> "betyarsors.gear-picker" this}}
+      {{else}}
+      <span class="gear-tag">{{label}} <strong>+{{dice}}d6</strong></span>
+      {{/if}}
+      {{/each}}
+    </div>
+    {{/if}}
   </section>
   {{/if}}
 

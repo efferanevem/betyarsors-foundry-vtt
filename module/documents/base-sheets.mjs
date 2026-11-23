@@ -128,7 +128,7 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
     form: { submitOnChange: true },
     actions: {
       toggleWeaponAttribute: BetyarsorsItemSheet.#onToggleWeaponAttribute,
-      addGearSkill: BetyarsorsItemSheet.#onAddGearSkill
+      setGearDice: BetyarsorsItemSheet.#onSetGearDice
     }
   };
 
@@ -140,20 +140,42 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
     this.render();
   }
 
-  static async #onAddGearSkill(_event, target) {
+  _onRender(context, options) {
+    super._onRender(context, options);
+    const select = this.element.querySelector("[data-gear-skill-picker]");
+    if (!select) return;
+    const picker = select.closest(".item-gear-picker");
+    const choices = picker.querySelector("fieldset");
+    picker.onbeforetoggle = (event) => {
+      if (event.newState === "open") {
+        select.value = "";
+        choices.disabled = true;
+      }
+    };
+    select.onchange = (event) => {
+      // A jártasság kiválasztása még ne küldje be a lap űrlapját.
+      event.stopPropagation();
+      choices.disabled = !select.value;
+    };
+  }
+
+  static async #onSetGearDice(_event, target) {
     const diceBySkill = this.document.system.skillGearDice;
     if (!this.isEditable || !diceBySkill) return;
-    const row = target.parentElement;
-    const skillPicker = row.querySelector("[data-gear-skill-picker]");
-    const skill = skillPicker.value;
-    if (!skill) {
-      skillPicker.focus();
-      return;
+    const picker = target.closest(".item-gear-picker");
+    if (!picker?.matches(":popover-open") || picker.inert) return;
+    const editing = !!picker.dataset.skill;
+    const skill = picker.dataset.skill || picker.querySelector("select")?.value;
+    const dice = Number(target.dataset.dice);
+    if (!Object.hasOwn(diceBySkill, skill) || editing !== (diceBySkill[skill] > 0)) return;
+    if (!Number.isInteger(dice) || dice < (editing ? 0 : 1) || dice > CONFIG.BETYARSORS.gearDiceMax) return;
+    picker.inert = true;
+    try {
+      if (dice !== diceBySkill[skill]) await this.document.update({ [`system.skillGearDice.${skill}`]: dice });
+      if (picker.matches(":popover-open")) picker.hidePopover();
+    } finally {
+      picker.inert = false;
     }
-    if (!Object.hasOwn(diceBySkill, skill) || diceBySkill[skill] > 0) return;
-    const dice = Number(row.querySelector("[data-gear-dice-picker]")?.value);
-    if (!Number.isInteger(dice) || dice < 1 || dice > CONFIG.BETYARSORS.gearDiceMax) return;
-    await this.document.update({ [`system.skillGearDice.${skill}`]: dice });
   }
 
   static PARTS = {
@@ -170,10 +192,10 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
         label: game.i18n.localize(typeof label === "string" ? label : label.label),
         selected: String(value) === String(selected)
       }));
-    const gearDiceOptions = (selected, zeroLabel = "–") =>
+    const gearDiceOptions = (selected) =>
       Array.from({ length: cfg.gearDiceMax + 1 }, (_, value) => ({
         value,
-        label: value === 0 ? zeroLabel : `${value}d6`,
+        label: value === 0 ? "–" : `${value}d6`,
         selected: value === selected
       }));
     const hasVisibility = Object.hasOwn(item.system.schema.fields, "visibility");
@@ -192,13 +214,17 @@ export class BetyarsorsItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
       hasVisibility,
       hasProperties: hasVisibility || item.type === "Fortely",
       editable: this.isEditable,
+      hasSkillGearDice: !!diceBySkill,
+      gearAddId: `${this.id}-gear-add`,
       availableGearSkills: gearSkills.filter(({ value }) => !diceBySkill[value]),
-      addGearDiceOptions: diceBySkill ? gearDiceOptions(1).slice(1) : [],
+      addGearDiceOptions: diceBySkill ? gearDiceOptions().slice(1) : [],
       gearSkillRows: gearSkills.filter(({ value }) => diceBySkill[value] > 0)
         .map(({ value, label }) => ({
           key: value,
           label,
-          options: gearDiceOptions(diceBySkill[value], game.i18n.localize("BETYARSORS.Label.Remove"))
+          dice: diceBySkill[value],
+          pickerId: `${this.id}-gear-${value}`,
+          options: gearDiceOptions(diceBySkill[value]).slice(1)
         })),
       combatSkillOptions: item.type === "Fegyver" ? localizeMap(cfg.combatSkills, item.system.skill) : [],
       weaponHandsOptions: item.type === "Fegyver" ? localizeMap(cfg.weaponHands, item.system.hands) : [],
