@@ -79,6 +79,8 @@
   "BETYARSORS.Label.RollWeapon": "Támadás ezzel a fegyverrel",
   "BETYARSORS.Label.Injuries": "Sérülések",
   "BETYARSORS.Label.InjuryLocation": "Sérülés Helye és Fajtája",
+  "BETYARSORS.Label.InjuryType": "Seb fajtája",
+  "BETYARSORS.Label.InjuryCustomLocation": "Hely és fajta megadása szabad szöveggel",
   "BETYARSORS.Label.InjuryEffect": "Hatás",
   "BETYARSORS.Label.InjuryRecovery": "Felépülési idő",
   "BETYARSORS.Label.NoInjuries": "Nincs sérülés.",

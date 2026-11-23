@@ -1,9 +1,9 @@
 import { BETYARSORS, applySkillFp } from "../config.mjs";
 import { CreatureDataModel, int } from "./creature.mjs";
 
-const { ArrayField, SchemaField, StringField } = foundry.data.fields;
+const { ArrayField, BooleanField, SchemaField, StringField } = foundry.data.fields;
 
-const text = () => new StringField({ required: false, blank: true, initial: "" });
+const text = (options = {}) => new StringField({ required: false, blank: true, initial: "", ...options });
 
 /**
  * Karakter (játékoskarakter) – a közös lény séma + Sorspont, hírnév, sérülések, ló.
@@ -28,7 +28,10 @@ export class KarakterDataModel extends CreatureDataModel {
       /** Sérülések táblázat. */
       injuries: new ArrayField(
         new SchemaField({
-          location: text(), // Sérülés helye és fajtája
+          hitLocation: text({ choices: ["", ...Object.keys(BETYARSORS.hitLocations)] }),
+          woundType: text({ choices: ["", ...Object.keys(BETYARSORS.wounds)] }),
+          useCustomLocation: new BooleanField({ initial: false }),
+          location: text(), // A hely és a fajta szabad szöveggel
           effect: text(), // Hatás
           recovery: text() // Felépülési idő
         }),
@@ -43,6 +46,15 @@ export class KarakterDataModel extends CreatureDataModel {
         exhaustion: int({ min: 0, max: BETYARSORS.horseExhaustion.length - 1 })
       })
     };
+  }
+
+  static migrateData(source) {
+    if (Array.isArray(source.injuries)) {
+      for (const injury of source.injuries) {
+        if (injury?.location && injury.useCustomLocation === undefined) injury.useCustomLocation = true;
+      }
+    }
+    return super.migrateData(source);
   }
 
   prepareDerivedData() {

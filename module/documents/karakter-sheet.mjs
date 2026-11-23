@@ -38,24 +38,33 @@ export class BetyarsorsKarakterSheet extends BetyarsorsCreatureSheet {
       label: L(label),
       isChecked: value === sys.horse.exhaustion
     }));
+    context.hitLocations = cfg.hitLocations;
+    context.woundTypes = cfg.wounds;
     context.injuries = sys.injuries.map((inj, index) => ({ ...inj, index }));
     return context;
   }
 
-  /** A Sérülések táblázat (ArrayField) űrlapadata objektumként érkezik ({0: …, 1: …}) → tömb. */
+  /** Az ArrayField soraihoz csak a látható mezők érkeznek az űrlapról. */
   _processFormData(event, form, formData) {
     const data = super._processFormData(event, form, formData);
     const injuries = data.system?.injuries;
-    if (injuries && !Array.isArray(injuries)) {
-      data.system.injuries = Object.keys(injuries)
-        .sort((a, b) => Number(a) - Number(b))
-        .map((k) => injuries[k]);
+    if (injuries) {
+      data.system.injuries = this.document.system.injuries.map((stored, index) => {
+        const injury = { ...stored, ...injuries[index] };
+        if (injury.useCustomLocation !== stored.useCustomLocation) {
+          const selected = [BETYARSORS.hitLocations[injury.hitLocation], BETYARSORS.wounds[injury.woundType]]
+            .filter(Boolean).map(({ label }) => L(label)).join(" – ");
+          if (injury.useCustomLocation) injury.location ||= selected;
+          else if (injury.location === selected) injury.location = "";
+        }
+        return injury;
+      });
     }
     return data;
   }
 
   static async #onInjuryAdd() {
-    const injuries = [...this.document.system.injuries, { location: "", effect: "", recovery: "" }];
+    const injuries = [...this.document.system.injuries, {}];
     await this.document.update({ "system.injuries": injuries });
   }
 

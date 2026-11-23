@@ -273,7 +273,7 @@
 .betyarsors .injuries { display: flex; flex-direction: column; gap: 0.25rem; }
 .betyarsors .injury-row {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1.5rem;
+  grid-template-columns: minmax(0, 2.4fr) minmax(0, 2fr) minmax(0, 1fr) 1.5rem;
   gap: 0.4rem;
   align-items: center;
 }
@@ -284,6 +284,11 @@
   color: var(--b-ink-soft);
   border-bottom: 1px solid var(--b-frame-light);
 }
+.betyarsors .injury-location { display: flex; align-items: center; gap: 0.25rem; }
+.betyarsors .injury-location > :is(input, select) { flex: 1; min-width: 0; }
+.betyarsors .injury-mode { position: relative; cursor: pointer; }
+.betyarsors .injury-mode input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit; }
+.betyarsors .injury-mode:focus-within { outline: 1px solid var(--b-red); }
 
 /* ---------- Ló ---------- */
 .betyarsors .creature-sheet .horse { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }

@@ -60,7 +60,28 @@
       </div>
       {{#each injuries}}
       <div class="injury-row" data-index="{{index}}">
-        <input type="text" name="system.injuries.{{index}}.location" value="{{location}}" />
+        <div class="injury-location">
+          {{#if useCustomLocation}}
+          <input type="text" name="system.injuries.{{index}}.location" value="{{location}}"
+                 aria-label="{{localize 'BETYARSORS.Label.InjuryLocation'}}" />
+          {{else}}
+          <select name="system.injuries.{{index}}.hitLocation" aria-label="{{localize 'BETYARSORS.HitLocation.Title'}}">
+            <option value="">{{localize "BETYARSORS.HitLocation.Title"}}</option>
+            {{selectOptions @root.hitLocations selected=hitLocation labelAttr="label" localize=true}}
+          </select>
+          <select name="system.injuries.{{index}}.woundType" aria-label="{{localize 'BETYARSORS.Label.InjuryType'}}">
+            <option value="">{{localize "BETYARSORS.Label.InjuryType"}}</option>
+            {{selectOptions @root.woundTypes selected=woundType labelAttr="label" localize=true}}
+          </select>
+          {{/if}}
+          {{#if @root.editable}}
+          <label class="wound-edit-toggle injury-mode {{#if useCustomLocation}}active{{/if}}" data-tooltip="BETYARSORS.Label.InjuryCustomLocation">
+            <input type="checkbox" name="system.injuries.{{index}}.useCustomLocation" {{checked useCustomLocation}}
+                   aria-label="{{localize 'BETYARSORS.Label.InjuryCustomLocation'}}" />
+            <i class="fa-solid fa-feather" aria-hidden="true"></i>
+          </label>
+          {{/if}}
+        </div>
         <input type="text" name="system.injuries.{{index}}.effect" value="{{effect}}" />
         <input type="text" name="system.injuries.{{index}}.recovery" value="{{recovery}}" />
         <span class="item-controls">
